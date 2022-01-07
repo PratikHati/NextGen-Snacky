@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace NextGen_Snacky.Controllers
 {
+    [Area("Customer")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
