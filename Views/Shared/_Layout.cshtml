@@ -9,7 +9,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-danger border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">NextGen_Snacky</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -19,11 +19,25 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
+
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-white-50" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item dropdown text-white">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" id="MenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Content
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="MenuLink">
+                                <a class="dropdown-item" href="#">Category </a>
+                                <a class="dropdown-item" href="#">Sub-Category </a>
+                                <a class="dropdown-item" href="#">Menu Items </a>
+                                <a class="dropdown-item" href="#">Coupons </a>
+                                <a class="dropdown-item" href="#">Users </a>
+
+                            </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-white-50" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
                 </div>
@@ -36,7 +50,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer bg-dark text-white">
+    <footer class="border-top footer bg-warning text-dark">
         <div class="container">
             &copy; 2022 - NextGen_Snacky - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
