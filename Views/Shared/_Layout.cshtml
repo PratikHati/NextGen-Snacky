@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body>
+<body class="search_background">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-danger border-bottom box-shadow mb-3">
             <div class="container">
@@ -24,15 +24,15 @@
                             <a class="nav-link text-white-50" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item dropdown text-white">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" id="MenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle " href="#" role="button" id="MenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Content
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="MenuLink">
-                                <a class="dropdown-item" asp-action="Index" asp-controller="Category" asp-area="Admin"> Category </a>
-                                <a class="dropdown-item" >Sub-Category </a>
-                                <a class="dropdown-item" >Menu Items </a>
-                                <a class="dropdown-item" >Coupons </a>
-                                <a class="dropdown-item" >Users </a>
+                            <div class="dropdown-menu bg-dark text-white" aria-labelledby="MenuLink">
+                                <a class="dropdown-item text-white" asp-action="Index" asp-controller="Category" asp-area="Admin"> Category </a>
+                                <a class="dropdown-item text-white" >Sub-Category </a>
+                                <a class="dropdown-item text-white" >Menu Items </a>
+                                <a class="dropdown-item text-white" >Coupons </a>
+                                <a class="dropdown-item text-white" >Users </a>
 
                             </div>
                         </li>

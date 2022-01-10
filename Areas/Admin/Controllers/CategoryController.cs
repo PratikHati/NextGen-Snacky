@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NextGen_Snacky.Data;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,11 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         {
             _adb = db;
         }
-        public IActionResult Index()
+
+        //GET Category list
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return View(await _adb.Category.ToListAsync());
         }
     }
 }
