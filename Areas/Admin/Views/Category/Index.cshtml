@@ -4,7 +4,7 @@
 @{ 
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
- }
+}
 
 <br />
 <div class="border backgroundWhite">
@@ -18,8 +18,36 @@
     </div>
     <br />
     <div>
-        <table class="table border table-striped ">
+        @if(Model.Count() > 0)
+        {
+           <table class="table border table-striped ">
+                <tr class="table-secondary">
+                    <th>
+                        @Html.DisplayNameFor(m => m.Name)
+                    </th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    @foreach (var v in Model)
+                    {
+                        <td>
+                            @Html.DisplayNameFor(m => v.Name)
+                        </td>
+                        <td>
+                            EDIT | ADD | MODIFY
+                        </td>
+                    }
+                </tr>
+            </table>
+         }
+            else
+            {
+                <div>
+                    <p>No Category Exists</p>
+                </div>
+            }
 
-        </table>
     </div>
 </div>
