@@ -22,5 +22,11 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         {
             return View(await _adb.Category.ToListAsync());
         }
+
+        //GET create and it will not return any retrived element 
+        public IActionResult Create()
+        {
+            return View();
+        }
     }
 }
