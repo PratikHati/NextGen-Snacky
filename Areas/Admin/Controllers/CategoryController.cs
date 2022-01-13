@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NextGen_Snacky.Data;
+using NextGen_Snacky.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,20 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         public IActionResult Create()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                _adb.Category.Add(category);
+                await _adb.SaveChangesAsync();
+
+                return RedirectToAction("Index");
+            }
+            return View(category);
         }
     }
 }
