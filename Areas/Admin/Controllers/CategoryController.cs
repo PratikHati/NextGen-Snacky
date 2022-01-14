@@ -59,5 +59,19 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             }
             return View(category);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                _adb.Category.Update(category);
+                await _adb.SaveChangesAsync();
+
+                return RedirectToAction("Index");
+            }
+            return View(category);
+        }
     }
 }
