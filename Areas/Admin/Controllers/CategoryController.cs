@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NextGen_Snacky.Data;
 using NextGen_Snacky.Models;
@@ -87,6 +88,24 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
                 return NotFound();
             }
             return View(category);
+        }
+
+        //ActionName("Delete") is used to deferentiate it from above method i.e "public async Task<IActionResult> Delete(int? id)"
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var category = await _adb.Category.FindAsync(id);
+
+            if (category == null)
+            {
+                return View();
+            }
+
+            _adb.Category.Remove(category);
+            await _adb.SaveChangesAsync();
+
+            return RedirectToAction("Index");
         }
     }
 }
