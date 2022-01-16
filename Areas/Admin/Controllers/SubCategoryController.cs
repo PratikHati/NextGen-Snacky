@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NextGen_Snacky.Data;
+using NextGen_Snacky.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,19 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         {
             var subcategory = await _adb.SubCategory.Include(x=>x.Category).ToListAsync();      //"Include(x=>x.Category)" to map the foreign key from Category table
             return View(subcategory);
+        }
+
+        //GET- Create
+        public async Task<IActionResult> Create()
+        {
+            SubCategoryAndCategoryViewModel model = new SubCategoryAndCategoryViewModel()
+            {
+                CategoryList = await _adb.Category.ToListAsync(),
+                SubCategory = new Models.SubCategory(),
+                SubCategoryList = await _adb.SubCategory.OrderBy(x=>x.Name).Select(x => x.Name).Distinct().ToListAsync(),
+            };
+
+            return View(model);
         }
     }
 }
