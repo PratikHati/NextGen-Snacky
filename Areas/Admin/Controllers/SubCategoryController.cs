@@ -13,6 +13,9 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
     public class SubCategoryController : Controller
     {
         private readonly ApplicationDbContext _adb;
+        
+        [TempData]
+        public string StatusMessage { get; set; }
         public SubCategoryController(ApplicationDbContext db)
         {
             _adb = db;
@@ -48,7 +51,8 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
                 var subcategory = _adb.SubCategory.Include(x => x.Category).Where(x => x.Name == sub.SubCategory.Name && x.Category.Id == sub.SubCategory.CategoryId);
                 if(subcategory.Count() > 0)
                 {
-                    //Error
+                    //Error  "Error" will auto identified by ASP.NET Identity. Visit "_StatuMessage.cshtml" to see logic
+                    StatusMessage = "Error : Sub-Category already exists in " + subcategory.First().Category.Name + " Category. Please select different Sub-Category";
                 }
                 else
                 {
@@ -63,7 +67,8 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             {
                 CategoryList = await _adb.Category.ToListAsync(),
                 SubCategory = sub.SubCategory,
-                SubCategoryList = await _adb.SubCategory.OrderBy(x => x.Name).Select(x => x.Name).ToListAsync()
+                SubCategoryList = await _adb.SubCategory.OrderBy(x => x.Name).Select(x => x.Name).ToListAsync(),
+                StatusMessage=StatusMessage
             };
 
             return View(obj);
