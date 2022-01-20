@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NextGen_Snacky.Data;
+using NextGen_Snacky.Models;
 using NextGen_Snacky.Models.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -72,6 +74,18 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             };
 
             return View(obj);
+        }
+
+        [ActionName("GetSubCategory")]
+        public async Task<IActionResult> GetSubCategory(int id)
+        {
+            List<SubCategory> subCategories = new List<SubCategory>();
+
+            subCategories = await (from SubCategory in _adb.SubCategory
+                             where SubCategory.CategoryId == id
+                             select SubCategory).ToListAsync();
+
+            return Json(new SelectList(subCategories,"Id", "Name"));
         }
     }
 }
