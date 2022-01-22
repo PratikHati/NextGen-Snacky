@@ -128,8 +128,8 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
                 }
                 else
                 {
-                    //valid
-                    _adb.SubCategory.Add(sub.SubCategory);
+                    var subcat  = await _adb.SubCategory.FindAsync(id);
+                    subcat.Name = sub.SubCategory.Name;
                     await _adb.SaveChangesAsync();
                     return RedirectToAction("Index");
                 }

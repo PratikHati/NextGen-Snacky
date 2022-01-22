@@ -13,6 +13,6 @@ namespace NextGen_Snacky.Models.ViewModels
 
         public List<string> SubCategoryList { get; set; }       //to show already existed sub-category of that category
 
-        public string StatusMessage { get; set; }
+        public string StatusMessage { get; set; }       //to show error message
     }
 }
