@@ -116,7 +116,7 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         //POST - Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int ? id,SubCategoryAndCategoryViewModel sub)
+        public async Task<IActionResult> Edit(int  id,SubCategoryAndCategoryViewModel sub)
         {
             if (ModelState.IsValid)
             {
@@ -142,6 +142,9 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
                 SubCategoryList = await _adb.SubCategory.OrderBy(x => x.Name).Select(x => x.Name).ToListAsync(),
                 StatusMessage = StatusMessage
             };
+
+            //FIXED  Reason- after error message again reassign its subcategory id else next step(Edit()) will affect
+            obj.SubCategory.Id = id;
 
             return View(obj);
         }
