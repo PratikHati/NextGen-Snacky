@@ -143,10 +143,33 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
                 StatusMessage = StatusMessage
             };
 
+            //---------------------IMPORTANT--------------------------//
+
             //FIXED  Reason- after error message again reassign its subcategory id else next step(Edit()) will affect
+            //as "id" will 0 if prev step was error 
             obj.SubCategory.Id = id;
 
             return View(obj);
+        }
+
+        //GET- Details
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var subCategory = await _adb.SubCategory.Include(x=>x.Category).SingleOrDefaultAsync(x=>x.Id==id);
+
+            if (subCategory == null)
+            {
+                return NotFound();
+            }
+
+            
+
+            return View(subCategory);
         }
     }
 }
