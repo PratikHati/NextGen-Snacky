@@ -171,5 +171,41 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
 
             return View(subCategory);
         }
+
+        //GET- Delete
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var subCategory = await _adb.SubCategory.Include(x => x.Category).SingleOrDefaultAsync(x => x.Id == id);
+
+            if (subCategory == null)
+            {
+                return NotFound();
+            }
+
+            return View(subCategory);
+        }
+
+        //POST - Delete
+        [HttpPost,ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var subCategory = await _adb.SubCategory.SingleOrDefaultAsync(x=>x.Id==id);
+
+            if (subCategory == null)
+            {
+                return View();
+            }
+
+            _adb.SubCategory.Remove(subCategory);
+            await _adb.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
     }
 }
