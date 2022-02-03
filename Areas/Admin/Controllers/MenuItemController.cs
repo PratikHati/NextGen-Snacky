@@ -23,11 +23,21 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         {
             _adb = adb;
             _hosting = hosting;
+            _MenuItemViewModel = new MenuItemViewModel()
+            {
+                Category = _adb.Category,
+                MenuItem = new Models.MenuItem()
+            };
         }
         public async Task<IActionResult> Index()
         {
             var menu = await _adb.MenuItem.Include(x=>x.Category).Include(x=>x.SubCategory).ToListAsync();
             return View(menu);
+        }
+        //GET- Create
+        public IActionResult Create()
+        {
+            return View(_MenuItemViewModel);
         }
 
     }
