@@ -25,5 +25,6 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             var menu = await _adb.MenuItem.Include(x=>x.Category).Include(x=>x.SubCategory).ToListAsync();
             return View(menu);
         }
+
     }
 }
