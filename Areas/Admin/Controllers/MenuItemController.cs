@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NextGen_Snacky.Data;
+using NextGen_Snacky.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,9 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
     {
         private readonly ApplicationDbContext _adb;
         private readonly IHostingEnvironment _hosting;
+
+        [BindProperty]
+        public MenuItemViewModel _MenuItemViewModel { get; set; }
 
         public MenuItemController(ApplicationDbContext adb, IHostingEnvironment hosting)
         {
