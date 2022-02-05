@@ -15,16 +15,84 @@
 
     <div class="border backgroundWhite">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        @*<div class="form-group row">
+
+        @*------------------------for MenuItem.Name---------------------------*@
+        <div class="form-group row">
             <div class="col-2">
-                <label asp-for="Name" class="col-form-label"></label>
+                <label asp-for="MenuItem.Name" class="col-form-label"></label>
             </div>
             <div class="col-5">
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="MenuItem.Name" class="form-control" />
             </div>
-            <span asp-validation-for="Name" class="text-danger"></span>
-        </div>*@
-        
+            <span asp-validation-for="MenuItem.Name" class="text-danger"></span>
+        </div>
+
+        @*------------------------for MenuItem.Description---------------------------*@
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="MenuItem.Description" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                @Html.TextBoxFor(m => m.MenuItem.Description)
+            </div>
+            <span asp-validation-for="MenuItem.Description" class="text-danger"></span>
+        </div>
+
+        @*--------------------------for MenuItem.Price---------------------------*@
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="MenuItem.Price" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="MenuItem.Price" class="form-control" />
+            </div>
+            <span asp-validation-for="MenuItem.Price" class="text-danger"></span>
+        </div>
+
+        @*------------------------for MenuItem.Image---------------------------*@
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="MenuItem.Image" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input type="file" name="files" multiple class="form-control" />
+            </div>
+        </div>
+
+        @*--------------------------for MenuItem.CategoryId---------------------------*@
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="MenuItem.CategoryId" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <select asp-for="@Model.MenuItem.CategoryId" id="CategoryId" asp-items="Model.Category.ToSelectListItems(Model.MenuItem.CategoryId)" class="form-control"></select>
+            </div>
+
+        </div>
+
+        @*--------------------------for MenuItem.SubCategoryId---------------------------*@
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="MenuItem.SubCategoryId" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <select asp-for="@Model.MenuItem.SubCategoryId" id="SubCategoryId" asp-items="@(new SelectList(string.Empty,"Id","Name"))" class="form-control"></select>
+            </div>
+
+        </div>
+
+        @*------------------------for MenuItem.Spicyness---------------------------*@
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="MenuItem.Spicyness" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <select asp-for="MenuItem.Spicyness" asp-items="Html.GetEnumSelectList<MenuItem.ESpicy>()" class="form-control">
+                </select>
+            </div>
+            
+        </div>
         <div class="form-group row">
             <div class="col-5 offset-2">
                 <partial name="_CreateAndBackToListButton" />
