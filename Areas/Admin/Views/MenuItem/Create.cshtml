@@ -102,6 +102,9 @@
 </form>
 
 @section Scripts{
+
+@*    Script to display subcategory of respective category
+*@    
     <script type="text/javascript">
         $(document).ready(function () {
             getSubCategory();
@@ -110,19 +113,26 @@
             });
         });
         function getSubCategory() {
-            var url = '@Url.Content("~/")' + "Admin/SubCategory/GetSubCategory";
+
+            var url = '@Url.Content("~/")' + "Admin/SubCategory/GetSubCategory";    
+
             var ddlsoruce = '#CategoryId';
+
             $.getJSON(url, { id: $(ddlsoruce).val() }, function (data) {
+
                 var items = '';
-                $('#SubCategoryId').empty();
+
                 $.each(data, function (i, subcategory) {
                     items += "<option value='" + subcategory.value + "'>" + subcategory.text + "</option>";
                 });
+
                 $('#SubCategoryId').html(items);
             })
         }
     </script>
 }
 
-@{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+@{ 
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}   
+
