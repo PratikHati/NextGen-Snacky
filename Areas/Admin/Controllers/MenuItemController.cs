@@ -43,7 +43,7 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         }
 
         //POST- Create
-        [HttpPost]
+        [HttpPost, ActionName("Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePOST()           // MenuItemViewModel already binded in constructor so , not need to pass as parameter
         {
