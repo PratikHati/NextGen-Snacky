@@ -77,7 +77,7 @@
                 <label asp-for="MenuItem.SubCategoryId" class="col-form-label"></label>
             </div>
             <div class="col-5">
-                <select asp-for="@Model.MenuItem.SubCategoryId" id="SubCategoryId" asp-items="@(new SelectList(string.Empty,"Id","Name"))" class="form-control"></select>
+                <select asp-for="@Model.MenuItem.SubCategoryId" name="SubCategoryId" id="SubCategoryId" asp-items="@(new SelectList(string.Empty,"Id","Name"))" class="form-control"></select>
             </div>
 
         </div>

@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NextGen_Snacky.Data;
 using NextGen_Snacky.Models.ViewModels;
+using NextGen_Snacky.Utility;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,5 +42,52 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             return View(_MenuItemViewModel);
         }
 
+        //POST- Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreatePOST()           // MenuItemViewModel already binded in constructor so , not need to pass as parameter
+        {
+            _MenuItemViewModel.MenuItem.SubCategoryId = Convert.ToInt32(Request.Form["SubCategoryId"].ToString());      //"SubCategoryId" will be collcted from cshtml Form
+
+            if (!ModelState.IsValid)
+            {
+                return View(_MenuItemViewModel);
+            }
+
+            _adb.MenuItem.Add(_MenuItemViewModel.MenuItem);
+            await _adb.SaveChangesAsync();
+
+            //image saving logic
+            string rootpath = _hosting.WebRootPath;
+            var files = HttpContext.Request.Form.Files;             //retreive the file from Create.cshtml uploaded by user
+
+            var menuItemFromDb = await _adb.MenuItem.FindAsync(_MenuItemViewModel.MenuItem.Id);         //retrive the MenuItem ID for the picture
+
+            if (files.Count > 0)
+            {
+                //file already uploaded
+                var upload = Path.Combine(rootpath,"images");
+                var extension = Path.GetExtension(files[0].FileName);
+
+                using (var filestream = new FileStream(Path.Combine(upload + _MenuItemViewModel.MenuItem.Id + extension), FileMode.Create))
+                {
+                    files[0].CopyTo(filestream);        //copy file to server(upload)
+                }
+                menuItemFromDb.Image = @"\images\" +_MenuItemViewModel.MenuItem.Id + extension;
+            }
+            else
+            {
+                //files not uploaded, use default 
+                var upload = Path.Combine(rootpath,@"\images\"+SD.DefaultFoodImage);        //use default png file
+
+                System.IO.File.Copy(upload,rootpath+@"\images\"+_MenuItemViewModel.MenuItem.Id+".png");
+
+                menuItemFromDb.Image = @"\images\" + _MenuItemViewModel.MenuItem.Id + ".png";      //also update menuItemFromDb's Image
+            }
+
+            await _adb.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
