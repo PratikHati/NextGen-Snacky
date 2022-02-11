@@ -66,7 +66,7 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             if (files.Count > 0)
             {
                 //file already uploaded
-                var upload = Path.Combine(rootpath,"images");
+                var upload = Path.Combine(rootpath,"images");       //"REVIEW" Here(Minor error in image saving location and file name)
                 var extension = Path.GetExtension(files[0].FileName);
 
                 using (var filestream = new FileStream(Path.Combine(upload + _MenuItemViewModel.MenuItem.Id + extension), FileMode.Create))
