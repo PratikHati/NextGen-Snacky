@@ -66,7 +66,7 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             if (files.Count > 0)
             {
                 //file already uploaded
-                var upload = Path.Combine(rootpath,"images");       //"REVIEW" Here(Minor error in image saving location and file name)
+                var upload = Path.Combine(rootpath,@"images\");       //"REVIEW" Here(Minor error in image saving location and file name)
                 var extension = Path.GetExtension(files[0].FileName);
 
                 using (var filestream = new FileStream(Path.Combine(upload + _MenuItemViewModel.MenuItem.Id + extension), FileMode.Create))
@@ -123,39 +123,48 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
+                _MenuItemViewModel.SubCaregory = await _adb.SubCategory.Where(x=>x.CategoryId == _MenuItemViewModel.MenuItem.CategoryId).ToListAsync();
                 return View(_MenuItemViewModel);
             }
 
-            _adb.MenuItem.Add(_MenuItemViewModel.MenuItem);
-            await _adb.SaveChangesAsync();
 
             //image saving logic
             string rootpath = _hosting.WebRootPath;
             var files = HttpContext.Request.Form.Files;             //retreive the file from Create.cshtml uploaded by user
 
             var menuItemFromDb = await _adb.MenuItem.FindAsync(_MenuItemViewModel.MenuItem.Id);         //retrive the MenuItem ID for the picture
-
+                
             if (files.Count > 0)
             {
-                //file already uploaded
+                    //file already uploaded
                 var upload = Path.Combine(rootpath, "images");
                 var extension = Path.GetExtension(files[0].FileName);
 
+                //Delete origonal file
+                var path = Path.Combine(rootpath, menuItemFromDb.Image.TrimStart('\\'));       //trim that out
+
+                if (System.IO.File.Exists(path))
+                {
+                    //Delete the file/image
+                    System.IO.File.Delete(path);
+                }
+
+                //upload new file
                 using (var filestream = new FileStream(Path.Combine(upload + _MenuItemViewModel.MenuItem.Id + extension), FileMode.Create))
                 {
                     files[0].CopyTo(filestream);        //copy file to server(upload)
                 }
                 menuItemFromDb.Image = @"\images\" + _MenuItemViewModel.MenuItem.Id + extension;
             }
-            else
-            {
-                //files not uploaded, use default 
-                var upload = Path.Combine(rootpath, @"\images\" + SD.DefaultFoodImage);        //use default png file
 
-                System.IO.File.Copy(upload, rootpath + @"\images\" + _MenuItemViewModel.MenuItem.Id + ".png");
+            //also update any change in property of MenuItemViewModel
+            menuItemFromDb.Name = _MenuItemViewModel.MenuItem.Name;
+            menuItemFromDb.Price = _MenuItemViewModel.MenuItem.Price;
+            menuItemFromDb.Spicyness = _MenuItemViewModel.MenuItem.Spicyness;
+            menuItemFromDb.Description = _MenuItemViewModel.MenuItem.Description;
+            menuItemFromDb.CategoryId = _MenuItemViewModel.MenuItem.CategoryId;
+            menuItemFromDb.SubCategoryId = _MenuItemViewModel.MenuItem.SubCategoryId;
 
-                menuItemFromDb.Image = @"\images\" + _MenuItemViewModel.MenuItem.Id + ".png";      //also update menuItemFromDb's Image
-            }
 
             await _adb.SaveChangesAsync();
 
