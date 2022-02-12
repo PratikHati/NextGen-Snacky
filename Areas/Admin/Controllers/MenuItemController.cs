@@ -66,7 +66,7 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             if (files.Count > 0)
             {
                 //file already uploaded
-                var upload = Path.Combine(rootpath,@"images\");       //"REVIEW" Here(Minor error in image saving location and file name)
+                var upload = Path.Combine(rootpath,@"images\");       //fixed
                 var extension = Path.GetExtension(files[0].FileName);
 
                 using (var filestream = new FileStream(Path.Combine(upload + _MenuItemViewModel.MenuItem.Id + extension), FileMode.Create))
@@ -137,7 +137,7 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             if (files.Count > 0)
             {
                     //file already uploaded
-                var upload = Path.Combine(rootpath, "images");
+                var upload = Path.Combine(rootpath, @"images\");    //Review if not updating image url
                 var extension = Path.GetExtension(files[0].FileName);
 
                 //Delete origonal file
@@ -169,6 +169,25 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             await _adb.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
+        }
+
+        //GET- Details
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            _MenuItemViewModel.MenuItem = await _adb.MenuItem.Include(x => x.Category).Include(x => x.SubCategory).SingleOrDefaultAsync(x => x.Id == id);
+
+            _MenuItemViewModel.SubCaregory = await _adb.SubCategory.Where(y => y.CategoryId == _MenuItemViewModel.MenuItem.CategoryId).ToListAsync();
+
+            if (_MenuItemViewModel.MenuItem == null)
+            {
+                return NotFound();
+            }
+            return View(_MenuItemViewModel);
         }
     }
 }
