@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NextGen_Snacky.Data;
+using NextGen_Snacky.Models;
 using NextGen_Snacky.Models.ViewModels;
 using NextGen_Snacky.Utility;
 using System;
@@ -188,6 +189,55 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
                 return NotFound();
             }
             return View(_MenuItemViewModel);
+        }
+
+        //GET- Delete
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            _MenuItemViewModel.MenuItem = await _adb.MenuItem.Include(x => x.Category).Include(x => x.SubCategory).SingleOrDefaultAsync(x => x.Id == id);
+
+            //_MenuItemViewModel.SubCaregory = await _adb.SubCategory.Where(y => y.CategoryId == _MenuItemViewModel.MenuItem.CategoryId).ToListAsync();
+
+            if (_MenuItemViewModel.MenuItem == null)
+            {
+                return NotFound();
+            }
+            return View(_MenuItemViewModel);
+        }
+
+        //POST- Delete
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int  id)           // MenuItemViewModel already binded in constructor so , not need to pass as parameter
+        {
+
+            var rootpath = _hosting.WebRootPath;
+            MenuItem menuitem = await _adb.MenuItem.FindAsync(id);
+
+            if(menuitem != null)
+            {
+                //first delete image path
+                var imagepath = Path.Combine(rootpath,menuitem.Image.TrimStart('\\'));
+
+
+                if (System.IO.File.Exists(imagepath))
+                {
+                    //delete File , not path
+                    System.IO.File.Delete(imagepath);   
+                }
+                //then delete menuitem
+                _adb.MenuItem.Remove(menuitem);
+
+                //save db
+                await _adb.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
