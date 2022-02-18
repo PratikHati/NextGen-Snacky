@@ -1,5 +1,4 @@
-﻿
-@model IEnumerable<MenuItem>
+﻿@model IEnumerable<Coupon>
 
 @{
     ViewData["Title"] = "Index";
@@ -11,7 +10,7 @@
 <div class="border backgroundWhite">
     <div class="row">
         <div class="col-6">
-            <h2 class="text-info">Menu Item List</h2>
+            <h2 class="text-info">Coupon List</h2>
         </div>
         <div class="col-6 text-sm-right">
             <partial name="_CreateButton" />
@@ -23,38 +22,36 @@
         {
             <table class="table border table-striped ">
                 <tr class="table-secondary">
-                    <th>
+                    <td>
                         @Html.DisplayNameFor(m => m.Name)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(m => m.Price)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(m => m.CategoryId)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(m => m.SubCategoryId)
-                    </th>
-
+                    </td>
+                    <td>
+                        @Html.DisplayNameFor(m => m.Discount)
+                    </td>
+                    <td>
+                        @Html.DisplayNameFor(m => m.MinimumAmount)
+                    </td>
+                    <td>
+                        @Html.DisplayNameFor(m => m.IsActive)
+                    </td>
                 </tr>
-                @foreach (var v in Model)
+                @foreach (var item in Model)
                 {
                     <tr>
-
                         <td>
-                            @Html.DisplayFor(m => v.Name)
+                            @Html.DisplayFor(m => item.Name)
                         </td>
                         <td>
-                            @Html.DisplayFor(m => v.Price)
+                            @Html.DisplayFor(m => item.Discount)
                         </td>
                         <td>
-                            @Html.DisplayFor(m => v.Category.Name)
+                            @Html.DisplayFor(m => item.MinimumAmount)
                         </td>
                         <td>
-                            @Html.DisplayFor(m => v.SubCategory.Name)
+                            @Html.DisplayFor(m => item.IsActive)
                         </td>
                         <td>
-                            <partial name="_TableButton" model="v.Id" />
+                            <partial name="_TableButton" model="item.Id" />
                         </td>
 
                     </tr>
@@ -65,7 +62,7 @@
         else
         {
             <div>
-                <p>No Menu Item Exists</p>
+                <p>No Coupons Exists</p>
             </div>
         }
 

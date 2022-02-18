@@ -31,21 +31,21 @@
                     </th>
                 </tr>
                 @foreach (var v in Model)
-                 {
-            <tr>
+                {
+                    <tr>
 
-                <td>
-                    @Html.DisplayFor(m => v.Name)       @*FIXED DisplayFor vs DisplayNameFor*@
-                </td>
-                <td>
-                    @Html.DisplayFor(m => v.Category.Name)       
-                </td>
-                <td>
-                    <partial name="_TableButton" model="v.Id" />
-                </td>
+                        <td>
+                            @Html.DisplayFor(m => v.Name)       @*FIXED DisplayFor vs DisplayNameFor*@
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => v.Category.Name)
+                        </td>
+                        <td>
+                            <partial name="_TableButton" model="v.Id" />
+                        </td>
 
-            </tr>
-                 }
+                    </tr>
+                }
 
             </table>
         }

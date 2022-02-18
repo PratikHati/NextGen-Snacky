@@ -1,7 +1,7 @@
 ﻿
 @model IEnumerable<Category>
 
-@{ 
+@{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
@@ -19,7 +19,7 @@
     </div>
     <br />
     <div>
-        @if(Model.Count() > 0)
+        @if (Model.Count() > 0)
         {
             <table class="table border table-striped ">
                 <tr class="table-secondary">
@@ -33,23 +33,23 @@
                     <tr>
 
                         <td>
-                        @Html.DisplayFor(m => v.Name)       @*FIXED DisplayFor vs DisplayNameFor*@
+                            @Html.DisplayFor(m => v.Name)       @*FIXED DisplayFor vs DisplayNameFor*@
                         </td>
-                    <td>
-                        <partial name="_TableButton" model="v.Id" />
-                    </td>
+                        <td>
+                            <partial name="_TableButton" model="v.Id" />
+                        </td>
 
                     </tr>
                 }
-                
+
             </table>
-         }
-            else
-            {
-                <div>
-                    <p>No Category Exists</p>
-                </div>
-            }
+        }
+        else
+        {
+            <div>
+                <p>No Category Exists</p>
+            </div>
+        }
 
     </div>
 </div>
