@@ -22,5 +22,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             return View(await _adb.Coupon.ToListAsync());
         }
 
+        //GET- Create
+        public IActionResult Create()
+        {
+            return View();
+        }
     }
 }
