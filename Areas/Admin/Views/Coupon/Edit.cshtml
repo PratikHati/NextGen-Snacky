@@ -1,0 +1,119 @@
+﻿@model Coupon
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<h2 class="text-info">Edit Coupon</h2>
+<br />
+
+<form method="post" asp-action="Edit" enctype="multipart/form-data">
+
+    <div class="border backgroundWhite"
+
+         <div class="col-12 border">
+            @{
+                var base64 = Convert.ToBase64String(Model.Picture);
+                var imgsrc = string.Format("data:image/jpg;base64,{0}", base64);
+            }
+            <img src="@imgsrc" height="100%" width="100%" />
+        </div>
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        @*        ---------------------------Coupon.Name-----------------------------
+        *@
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Name" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="Name" class="form-control" />
+            </div>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        @**        ---------------------------Coupon.Picture-----------------------------
+        *@
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Picture" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input type="file" name="files" id="projectImage" multiple class="form-control" />
+            </div>
+        </div>
+
+        @**        ---------------------------Coupon.CouponType-----------------------------
+        *@
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="CouponType" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <select asp-for="CouponType" asp-items="Html.GetEnumSelectList<Coupon.ECouponType>()" class="form-control">
+
+                    @* ----------------------- GetEnumSelectList is used gor Enum Data type----------------------------------
+                    *@
+
+                </select>
+            </div>
+        </div>
+
+        @**        ---------------------------Coupon.Discount-----------------------------
+        *@
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Discount" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="Discount" class="form-control" />
+            </div>
+            <span asp-validation-for="Discount" class="text-danger"></span>
+        </div>
+
+        @**        ---------------------------Coupon.MinimumAmount-----------------------------
+        *@
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="MinimumAmount" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="MinimumAmount" class="form-control" />
+            </div>
+            <span asp-validation-for="MinimumAmount" class="text-danger"></span>
+        </div>
+
+        @**        ---------------------------Coupon.IsActive-----------------------------
+        *@
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="IsActive" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input type="checkbox" asp-for="IsActive" class="form-control" />
+            </div>
+            <span asp-validation-for="IsActive" class="text-danger"></span>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-5 offset-2">
+                <partial name="_EditAndBackToList" model="Model.Id" />
+            </div>
+        </div>
+
+    </div>
+
+</form>
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

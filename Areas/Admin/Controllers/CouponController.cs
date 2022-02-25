@@ -70,5 +70,76 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
                 return View(coupon);
             }
         }
+
+        //GET - Edit
+        public async Task<IActionResult> Edit(int ? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var coupon = await _adb.Coupon.SingleOrDefaultAsync(x => x.Id == id);
+
+            if(coupon == null)
+            {
+                return NotFound();
+            }
+
+            return View(coupon);
+        }
+
+        //POST - Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Coupon coupon)
+        {
+            if (coupon.Id == null)
+            {
+                return NotFound();
+            }
+
+            var couponDB = await _adb.Coupon.SingleOrDefaultAsync(x => x.Id == coupon.Id);
+
+            if (ModelState.IsValid)
+            {
+                var file = HttpContext.Request.Form.Files;      //retrive any file from FrontEnd .cshtml form
+
+                byte[] f = null;
+
+                //update file info in byte[]
+                if(file.Count > 0)
+                {
+                    using (var x = file[0].OpenReadStream())
+                    {
+                        using (var y = new MemoryStream())
+                        {
+                            //copy x to y
+                            x.CopyTo(y);
+
+                            f = y.ToArray();
+                        }
+                    }
+                    //save byte[] in db
+                    couponDB.Picture = f;
+                }
+
+                //update other properties
+                couponDB.Name = coupon.Name;
+                couponDB.MinimumAmount = coupon.MinimumAmount;
+                couponDB.IsActive = coupon.IsActive;
+                couponDB.Discount = coupon.Discount;
+                couponDB.CouponType = coupon.CouponType;
+
+                //savechanges
+                await _adb.SaveChangesAsync();
+
+
+                //return view
+                return RedirectToAction("Index");
+            }
+
+            return View(coupon);
+        }
     }
 }
