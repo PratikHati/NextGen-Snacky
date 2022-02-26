@@ -94,7 +94,7 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Coupon coupon)
         {
-            if (coupon.Id == null)
+            if (coupon == null)
             {
                 return NotFound();
             }
@@ -137,6 +137,24 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
 
                 //return view
                 return RedirectToAction("Index");
+            }
+
+            return View(coupon);
+        }
+
+        //GET - Details
+        public async Task<IActionResult> Details(int ? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var coupon = await _adb.Coupon.SingleOrDefaultAsync(x => x.Id == id);
+
+            if(coupon == null)
+            {
+                return NotFound();
             }
 
             return View(coupon);
