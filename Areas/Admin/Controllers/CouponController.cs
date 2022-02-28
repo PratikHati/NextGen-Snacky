@@ -159,5 +159,23 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
 
             return View(coupon);
         }
+
+        //Get - Delete
+        public async Task<IActionResult> Delete(int ? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var coupon = await _adb.Coupon.SingleOrDefaultAsync(x => x.Id == id);
+
+            if(coupon == null)
+            {
+                return NotFound();
+            }
+
+            return View(coupon);
+        }
     }
 }
