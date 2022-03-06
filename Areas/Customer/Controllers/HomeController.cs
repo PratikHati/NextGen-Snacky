@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using NextGen_Snacky.Data;
 using NextGen_Snacky.Models;
+using NextGen_Snacky.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,14 +17,22 @@ namespace NextGen_Snacky.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ApplicationDbContext _adb;
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext adb)
         {
             _logger = logger;
+            _adb = adb;         //dependency injection
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            IndexViewModel IndexVM = new IndexViewModel()
+            {
+                MenuItem = await _adb.MenuItem.Include(x => x.Category).Include(x => x.SubCategory).ToListAsync(),
+                Category = await _adb.Category.ToListAsync(),
+                Coupon = await _adb.Coupon.Where(x => x.IsActive == true).ToListAsync()     //Fixed "isActive"
+            };
+            return View(IndexVM);
         }
 
         public IActionResult Privacy()
