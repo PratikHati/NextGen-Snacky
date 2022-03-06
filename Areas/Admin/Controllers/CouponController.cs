@@ -177,5 +177,22 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
 
             return View(coupon);
         }
+
+        //POST - DELETE
+        [HttpPost,ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePOST(int ? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var coupon = await _adb.Coupon.SingleOrDefaultAsync(x => x.Id == id);
+            _adb.Coupon.Remove(coupon);
+            await _adb.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
