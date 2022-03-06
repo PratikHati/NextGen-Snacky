@@ -1,8 +1,54 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model NextGen_Snacky.Models.ViewModels.IndexViewModel;
+
+<br />
+
+@*-----------------------------------to display DISCOUNT at top of web page----------------------------------------*@
+@if (Model.Coupon.ToList().Count > 0)
+{
+    <div class="border">
+        <div class="Carousel" data-ride="carousel" data-interval="2000">
+            @for (int i = 0; i < Model.Coupon.Count(); i++)
+            {
+                if (i == 0)
+                {
+                    <div class="carousel-item active">
+                        @{
+                            var base64 = Convert.ToBase64String(Model.Coupon.ToList()[i].Picture); //convert Picture[] to base 64 string
+                            var imagesrc = string.Format("data:image/jpg;base64,{0}", base64);        //retrive corresponding jpg file
+                        }
+                        <img class="d-block w-100" src="@imagesrc" alt="First slide" height="50px" />
+                    </div>
+                }
+
+                else
+                {
+                    <div class="carousel-item">
+                        @{
+                            var base64 = Convert.ToBase64String(Model.Coupon.ToList()[i].Picture); //convert Picture[] to base 64 string
+                            var imagesrc = string.Format("data:image/jpg;base64,{0}", base64);        //retrive corresponding jpg file
+                        }
+                        <img class="d-block w-100" src="@imagesrc" alt="First slide" height="50px" />
+                    </div>
+                }
+
+            }
+        </div>
+    </div>
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+<br />
+<br />
+
+@*-----------------to display all MenuItem and there respective sub category at top of web page----------------------*@
+
+
+<div class="backgroundWhite container">
+    @foreach (var categoty in Model.Category)
+    {
+        <div class="row" id="menu-wrapper">
+            <partial name="_ThumbnailAreaPartial" model="@Model.MenuItem.Where(x => x.Category.Name.Equals(categoty.Name))" />
+        </div>
+
+    }
 </div>
