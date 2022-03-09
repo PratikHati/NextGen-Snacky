@@ -2,7 +2,7 @@
 
 @if (Model.Count() > 0)
 {
-    <div class="col-12">
+    <div class="col-12 post @Model.FirstOrDefault().Category.Name.Replace(" ",string.Empty) menu-restaurant ">
 
         @*-----------------------------------ToString display only category-------------------------------------- *@
         <div class="row">
@@ -49,9 +49,9 @@
                             </p>
                         </div>
 
-                        <div class="col-md-3 col-sm-12 text-right" >
-                            <a asp-action="Details" class="btn btn-success form-control" asp-route-id="@item.Id"> 
-                            Details
+                        <div class="col-md-3 col-sm-12 text-right">
+                            <a asp-action="Details" class="btn btn-success form-control" asp-route-id="@item.Id">
+                                Detail
                             </a>
                         </div>
                     </div>
@@ -61,4 +61,4 @@
         }
         <div class="p-4"></div>
     </div>
-}
+}   

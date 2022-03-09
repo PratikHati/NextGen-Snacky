@@ -44,6 +44,19 @@
 
 
 <div class="backgroundWhite container">
+
+    <ul id="menu-filters" class="menu-filter-list list-inline text-center">
+        <li class="active btn btn-secondary ml-1 mr-1" data-filter=".menu-restaurant">Show All</li>
+
+        @foreach (var item in Model.Category)
+        {
+            <li class="btn btn-secondary ml-1 mr-1" data-filter=".@item.Name.Replace(" ",string.Empty)">
+                @item.Name
+            </li>
+        }
+    </ul>
+
+
     @foreach (var categoty in Model.Category)
     {
         <div class="row" id="menu-wrapper">
@@ -52,3 +65,37 @@
 
     }
 </div>
+
+@*-------------------------------jQuery 3.x (CDN).Better use downloaded version for production environment-------------------------------------------*@
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous">
+    </script>
+
+    <script>
+        var post = $('.post');
+
+        (function ($) {
+            $('#menu-filters li').click(function () {
+
+                //steps to display respective Category object in respective btn click
+
+                //$('#menu-filters li').removeClass('active btn btn-secondary');  //remove current class in 49 Line (not necessary- FIXED)
+
+                $(this).addClass('active btn btn-secondary');                   //'this'-----> USER selected object
+
+                var filter = $(this).data("filter");                            //Extract the selected "data-filter" from Line 49
+
+                $('.menu-restaurant').fadeOut();                                //will dissapear "Show All" objects
+
+                setTimeout(function () {
+                    $(filter).slideDown();
+                }, 300);
+            });
+        })(jQuery);
+    </script>
+}
+
+
+
+
