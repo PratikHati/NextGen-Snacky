@@ -60,6 +60,14 @@ namespace NextGen_Snacky.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            public string Name { get; set; }
+            public string Address { get; set; }
+            public string Phone { get; set; }
+            public string City { get; set; }
+            public string State { get; set; }
+            public string PinCode { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
