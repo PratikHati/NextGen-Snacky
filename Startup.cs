@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NextGen_Snacky.Data;
+using NextGen_Snacky.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,11 +32,16 @@ namespace NextGen_Snacky
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>()                 
-         
+            services.AddIdentity<IdentityUser, IdentityRole>()                  //also add IdentityRole        
+                .AddDefaultTokenProviders()
                 //(options => options.SignIn.RequireConfirmedAccount = true) removed as email authentication not mandetory for our project
-                
+
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            
+            services.AddSingleton<IEmailSender, EmailSender>();             //Created a different "EmailSender" class to fix "Unable to resolve service for type IEmailSender while attempting to activate RegisterModel"
+
+            //Fix link (STACK OVERFLOW)-> "https://stackoverflow.com/questions/52089864/unable-to-resolve-service-for-type-iemailsender-while-attempting-to-activate-reg"
+
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
         }

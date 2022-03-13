@@ -63,6 +63,18 @@
             <span asp-validation-for="Input.City" class="text-danger"></span>
         </div>
 
+        @*===============================Address==============================*@
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Input.Address" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="Input.Address" class="form-control" />
+            </div>
+            <span asp-validation-for="Input.Address" class="text-danger"></span>
+        </div>
+
         @*===============================state==============================*@
 
         <div class="form-group row">
