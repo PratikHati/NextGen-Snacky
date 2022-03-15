@@ -50,7 +50,7 @@
 
         @foreach (var item in Model.Category)
         {
-            <li class="btn btn-secondary ml-1 mr-1" data-filter=".@item.Name.Replace(" ",string.Empty)">
+            <li class="active btn btn-secondary ml-1 mr-1" data-filter=".@item.Name.Replace(" ",string.Empty)">
                 @item.Name
             </li>
         }
