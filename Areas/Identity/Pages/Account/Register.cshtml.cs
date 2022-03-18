@@ -83,6 +83,8 @@ namespace NextGen_Snacky.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)       //After user clicking "Register", all backend logic algorithms should be here
         {
+            string role = Request.Form["common"].ToString();
+
             returnUrl = returnUrl ?? Url.Content("~/");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -118,7 +120,7 @@ namespace NextGen_Snacky.Areas.Identity.Pages.Account
                     }
 
                     if (!await _roleManager.RoleExistsAsync(SD.KitchenUser))        //if Chef already not exists
-                    {
+                    { 
                         //create a Chef account
                         await _roleManager.CreateAsync(new IdentityRole(SD.KitchenUser));
                     }
@@ -129,11 +131,37 @@ namespace NextGen_Snacky.Areas.Identity.Pages.Account
                         await _roleManager.CreateAsync(new IdentityRole(SD.FrontDeskUser));
                     }
 
-                    await _userManager.AddToRoleAsync(user,SD.ManageUser);      //testing - will remove
+                    //assign current role
 
-                    /*_logger.LogInformation("User created a new account with password.");
+                    if(role == SD.FrontDeskUser)
+                    {
+                        await _userManager.AddToRoleAsync(user, SD.FrontDeskUser);
+                    }
+                    else
+                    {
+                        if(role == SD.KitchenUser)
+                        {
+                            await _userManager.AddToRoleAsync(user, SD.KitchenUser);
+                        }
+                        else
+                        {
+                            if(role == SD.ManageUser)
+                            {
+                                await _userManager.AddToRoleAsync(user, SD.ManageUser);
+                            }
+                            else
+                            {
+                                await _userManager.AddToRoleAsync(user, SD.CustomerUser);
+                                await _signInManager.SignInAsync(user, isPersistent: false);        //only customer
+                                return LocalRedirect(returnUrl);            //customer  view will not show admin privilages
+                            }
+                        }
+                    }
+                    return RedirectToAction("Index","User",new { area = "Admin"});      //rest role can see "User" tab
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    _logger.LogInformation("User created a new account with password.");
+
+                    /*var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
@@ -155,14 +183,14 @@ namespace NextGen_Snacky.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }*/
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
+
                 }
+
                 foreach (var error in result.Errors)
-                {
+                { 
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-            }
+            }   
 
             // If we got this far, something failed, redisplay form
             return Page();
