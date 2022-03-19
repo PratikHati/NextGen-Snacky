@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NextGen_Snacky.Data;
+using NextGen_Snacky.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,13 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             var identity = (ClaimsIdentity)this.User.Identity;      //this tecnique used to get current logged in user role (Look StackOverflow)
 
             var claim = identity.FindFirst(ClaimTypes.NameIdentifier);      //null if user not logged in
+
+            var val = claim.Value;
+
+            if(User.IsInRole(SD.CustomerUser))                  //Customer user should not able to see Index() of this UserController (SECURITY AND PRIVACY)
+            {
+                return NoContent();                     //don't use UnAuthorized() as it will behave as broken link. Rather use NoContent()
+            }
 
             //retreive all role except current role 
             return View(await _adb.ApplicationUser.Where(x =>x.Id != claim.Value).ToListAsync());
