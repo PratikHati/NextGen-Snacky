@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NextGen_Snacky.Data;
 using NextGen_Snacky.Models;
+using NextGen_Snacky.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +22,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            return View(await _adb.Coupon.ToListAsync());
+            if(User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.ManageUser) || User.IsInRole(SD.FrontDeskUser))
+                return View(await _adb.Coupon.ToListAsync());
+
+            return NoContent();
         }
 
         //GET- Create
@@ -35,40 +39,48 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Coupon coupon)
         {
-            if (ModelState.IsValid)
+            if(User.IsInRole(SD.ManageUser) || User.IsInRole(SD.ManageUser))
             {
-                var files = HttpContext.Request.Form.Files;     //retrive file from from
-                
-                if(files.Count > 0)                             //file uploaded successfully
+                if (ModelState.IsValid)
                 {
-                    //create a byte array
-                    byte[] p1 = null;
+                    var files = HttpContext.Request.Form.Files;     //retrive file from from
 
-                    using (var fs1 = files[0].OpenReadStream())   //read first files object
+                    if (files.Count > 0)                             //file uploaded successfully
                     {
-                        using (var ms1 = new MemoryStream())
-                        {
-                            //copy from fs1 to ms1
-                            fs1.CopyTo(ms1);
+                        //create a byte array
+                        byte[] p1 = null;
 
-                            //assign ms1 to byte[]
-                            p1 = ms1.ToArray();
+                        using (var fs1 = files[0].OpenReadStream())   //read first files object
+                        {
+                            using (var ms1 = new MemoryStream())
+                            {
+                                //copy from fs1 to ms1
+                                fs1.CopyTo(ms1);
+
+                                //assign ms1 to byte[]
+                                p1 = ms1.ToArray();
+                            }
                         }
+                        //then store image in coupon
+                        coupon.Picture = p1;
                     }
-                    //then store image in coupon
-                    coupon.Picture = p1;
+
+                    //store other attributes
+                    _adb.Coupon.Add(coupon);
+                    await _adb.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
 
-                //store other attributes
-                _adb.Coupon.Add(coupon);
-                await _adb.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                else
+                {
+                    return View(coupon);
+                }
             }
-
             else
             {
-                return View(coupon);
+                return NoContent();
             }
+            
         }
 
         //GET - Edit

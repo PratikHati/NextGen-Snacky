@@ -29,7 +29,7 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
 
             var val = claim.Value;
 
-            if(User.IsInRole(SD.CustomerUser))                  //Customer user should not able to see Index() of this UserController (SECURITY AND PRIVACY)
+            if(User.IsInRole(SD.CustomerUser))                  //(2nd level security)Customer user should not able to see Index() of this UserController (SECURITY AND PRIVACY)
             {
                 return NoContent();                     //don't use UnAuthorized() as it will behave as broken link. Rather use NoContent()
             }

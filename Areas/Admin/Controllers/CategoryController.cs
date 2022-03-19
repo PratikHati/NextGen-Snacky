@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NextGen_Snacky.Data;
 using NextGen_Snacky.Models;
+using NextGen_Snacky.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,12 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         //GET Category list
         public async Task<IActionResult> Index()
         {
-            return View(await _adb.Category.ToListAsync());
+            if(User.IsInRole(SD.ManageUser) || User.IsInRole(SD.KitchenUser))
+                return View(await _adb.Category.ToListAsync());
+            else
+            {
+                return NoContent();
+            }
         }
 
         //GET create and it will not return any retrived element 
@@ -35,6 +41,11 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Category category)
         {
+            if (!User.IsInRole(SD.ManageUser))
+            {
+                return NoContent();
+            }
+
             if (ModelState.IsValid)
             {
                 _adb.Category.Add(category);
@@ -49,7 +60,8 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
-            if(id==null)
+
+            if (id==null)
             {
                 return NotFound();
             }
