@@ -18,6 +18,8 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         {
             _adb = adb;
         }
+
+        [HttpGet]
         public async Task<IActionResult> Index()
         { 
             var identity = (ClaimsIdentity)this.User.Identity;      //this tecnique used to get current logged in user role (Look StackOverflow)
@@ -26,6 +28,52 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
 
             //retreive all role except current role 
             return View(await _adb.ApplicationUser.Where(x =>x.Id != claim.Value).ToListAsync());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Lock(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _adb.ApplicationUser.Where(x => x.Id == id).FirstOrDefaultAsync();
+
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            //if found lock it
+            user.LockoutEnd = DateTime.Now.AddYears(100);       //Lockout will end in 100 years
+
+            await _adb.SaveChangesAsync();      //also save in db
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UnLock(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _adb.ApplicationUser.Where(x => x.Id == id).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            //if found unlock it
+            user.LockoutEnd = DateTime.Now;       //Lockout will end now
+
+            await _adb.SaveChangesAsync();      //also save in db
+
+            return RedirectToAction("Index");
         }
     }
 }

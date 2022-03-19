@@ -34,6 +34,7 @@ namespace NextGen_Snacky
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<IdentityUser, IdentityRole>()                  //also add IdentityRole        
                 .AddDefaultTokenProviders()
+                
                 //(options => options.SignIn.RequireConfirmedAccount = true) removed as email authentication not mandetory for our project
 
                 .AddEntityFrameworkStores<ApplicationDbContext>();
