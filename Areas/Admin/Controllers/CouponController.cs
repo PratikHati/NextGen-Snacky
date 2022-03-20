@@ -22,7 +22,7 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            if(User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.ManageUser) || User.IsInRole(SD.FrontDeskUser))
+            if (User.Identity.IsAuthenticated)
                 return View(await _adb.Coupon.ToListAsync());
 
             return NoContent();
@@ -39,7 +39,7 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Coupon coupon)
         {
-            if(User.IsInRole(SD.ManageUser) || User.IsInRole(SD.ManageUser))
+            if(User.IsInRole(SD.ManageUser))
             {
                 if (ModelState.IsValid)
                 {
@@ -90,6 +90,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser) || User.IsInRole(SD.KitchenUser))
+            {
+                return NoContent();
+            }
 
             var coupon = await _adb.Coupon.SingleOrDefaultAsync(x => x.Id == id);
 
@@ -109,6 +113,11 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             if (coupon == null)
             {
                 return NotFound();
+            }
+
+            if(User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser) || User.IsInRole(SD.KitchenUser))
+            {
+                return NoContent();
             }
 
             var couponDB = await _adb.Coupon.SingleOrDefaultAsync(x => x.Id == coupon.Id);
@@ -180,6 +189,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            if(User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser) || User.IsInRole(SD.KitchenUser))
+            {
+                return NoContent();
+            }
             var coupon = await _adb.Coupon.SingleOrDefaultAsync(x => x.Id == id);
 
             if(coupon == null)
@@ -199,7 +212,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+            if(User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser) || User.IsInRole(SD.KitchenUser))
+            {
+                return NoContent();
+            }
             var coupon = await _adb.Coupon.SingleOrDefaultAsync(x => x.Id == id);
             _adb.Coupon.Remove(coupon);
             await _adb.SaveChangesAsync();

@@ -23,12 +23,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         //GET Category list
         public async Task<IActionResult> Index()
         {
-            if(User.IsInRole(SD.ManageUser) || User.IsInRole(SD.KitchenUser))
+            if(User.Identity.IsAuthenticated)
                 return View(await _adb.Category.ToListAsync());
-            else
-            {
-                return NoContent();
-            }
+
+            return NoContent();
         }
 
         //GET create and it will not return any retrived element 
@@ -41,7 +39,7 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Category category)
         {
-            if (!User.IsInRole(SD.ManageUser))
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
             {
                 return NoContent();
             }
@@ -60,6 +58,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            {
+                return NoContent();
+            }
 
             if (id==null)
             {
@@ -78,6 +80,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Category category)
         {
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            {
+                return NoContent();
+            }
             if (ModelState.IsValid)
             {
                 _adb.Category.Update(category);
@@ -90,6 +96,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
 
         public async Task<IActionResult> Delete(int? id)
         {
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            {
+                return NoContent();
+            }
             if (id == null)
             {
                 return NotFound();
@@ -108,6 +118,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            {
+                return NoContent();
+            }
             var category = await _adb.Category.FindAsync(id);
 
             if (category == null)

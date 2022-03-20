@@ -34,8 +34,13 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var menu = await _adb.MenuItem.Include(x=>x.Category).Include(x=>x.SubCategory).ToListAsync();
-            return View(menu);
+            if (User.Identity.IsAuthenticated)
+            {
+                var menu = await _adb.MenuItem.Include(x => x.Category).Include(x => x.SubCategory).ToListAsync();
+                return View(menu);
+            }
+
+            return NoContent();            
         }
         //GET- Create
         public IActionResult Create()
@@ -48,6 +53,11 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePOST()           // MenuItemViewModel already binded in constructor so , not need to pass as parameter
         {
+            if(User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            {
+                return NoContent();
+            }
+
             _MenuItemViewModel.MenuItem.SubCategoryId = Convert.ToInt32(Request.Form["SubCategoryId"].ToString());      //"SubCategoryId" will be collcted from cshtml Form
 
             if (!ModelState.IsValid)
@@ -95,6 +105,11 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         //GET- Edit
         public async Task<IActionResult> Edit(int ? id)
         {
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            {
+                return NoContent();
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -116,6 +131,11 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPOST(int ? id)      // MenuItemViewModel already binded in constructor so , not need to pass as parameter
         {
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            {
+                return NoContent();
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -194,6 +214,11 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         //GET- Delete
         public async Task<IActionResult> Delete(int? id)
         {
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            {
+                return NoContent();
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -215,6 +240,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int  id)           // MenuItemViewModel already binded in constructor so , not need to pass as parameter
         {
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            {
+                return NoContent();
+            }
 
             var rootpath = _hosting.WebRootPath;
             MenuItem menuitem = await _adb.MenuItem.FindAsync(id);

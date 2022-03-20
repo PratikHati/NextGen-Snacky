@@ -23,19 +23,21 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         { 
-            var identity = (ClaimsIdentity)this.User.Identity;      //this tecnique used to get current logged in user role (Look StackOverflow)
-
-            var claim = identity.FindFirst(ClaimTypes.NameIdentifier);      //null if user not logged in
-
-            var val = claim.Value;
-
-            if(User.IsInRole(SD.CustomerUser))                  //(2nd level security)Customer user should not able to see Index() of this UserController (SECURITY AND PRIVACY)
+            if(User.Identity.IsAuthenticated)
             {
-                return NoContent();                     //don't use UnAuthorized() as it will behave as broken link. Rather use NoContent()
-            }
+                var identity = (ClaimsIdentity)this.User.Identity;      //this tecnique used to get current logged in user role (Look StackOverflow)
 
-            //retreive all role except current role 
-            return View(await _adb.ApplicationUser.Where(x =>x.Id != claim.Value).ToListAsync());
+                var claim = identity.FindFirst(ClaimTypes.NameIdentifier);      //null if user not logged in
+
+                if (User.IsInRole(SD.CustomerUser))                  //(2nd level security)Customer user should not able to see Index() of this UserController (SECURITY AND PRIVACY)
+                {
+                    return NoContent();                     //don't use UnAuthorized() as it will behave as broken link. Rather use NoContent()
+                }
+
+                //retreive all role except current role 
+                return View(await _adb.ApplicationUser.Where(x => x.Id != claim.Value).ToListAsync());
+            }
+            return NoContent();
         }
 
         [HttpGet]

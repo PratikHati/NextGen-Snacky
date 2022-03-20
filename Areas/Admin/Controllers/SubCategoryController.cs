@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NextGen_Snacky.Data;
 using NextGen_Snacky.Models;
 using NextGen_Snacky.Models.ViewModels;
+using NextGen_Snacky.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,13 +27,22 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         //GET - Index
         public async Task<IActionResult> Index()
         {
-            var subcategory = await _adb.SubCategory.Include(x=>x.Category).ToListAsync();      //"Include(x=>x.Category)" to map the foreign key from Category table
-            return View(subcategory);
+            if(User.Identity.IsAuthenticated)
+            {
+                var subcategory = await _adb.SubCategory.Include(x => x.Category).ToListAsync();      //"Include(x=>x.Category)" to map the foreign key from Category table
+                return View(subcategory);
+            }
+
+            return NoContent();
         }
 
         //GET- Create
         public async Task<IActionResult> Create()
         {
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            {
+                return NoContent();
+            }
             SubCategoryAndCategoryViewModel model = new SubCategoryAndCategoryViewModel()
             {
                 CategoryList = await _adb.Category.ToListAsync(),
@@ -48,6 +58,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SubCategoryAndCategoryViewModel sub)
         {
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            {
+                return NoContent();
+            }
             if (ModelState.IsValid)
             {
                 var subcategory = _adb.SubCategory.Include(x => x.Category).Where(x => x.Name == sub.SubCategory.Name && x.Category.Id == sub.SubCategory.CategoryId);
@@ -91,6 +105,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         //GET- Edit
         public async Task<IActionResult> Edit(int ? id)
         {
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            {
+                return NoContent();
+            }
             if (id == null)
             {
                 return NotFound();
@@ -118,6 +136,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int  id,SubCategoryAndCategoryViewModel sub)
         {
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            {
+                return NoContent();
+            }
             if (ModelState.IsValid)
             {
                 var subcategory = _adb.SubCategory.Include(x => x.Category).Where(x => x.Name == sub.SubCategory.Name && x.Category.Id == sub.SubCategory.CategoryId);
@@ -175,6 +197,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         //GET- Delete
         public async Task<IActionResult> Delete(int? id)
         {
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            {
+                return NoContent();
+            }
             if (id == null)
             {
                 return NotFound();
@@ -195,6 +221,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            {
+                return NoContent();
+            }
             var subCategory = await _adb.SubCategory.SingleOrDefaultAsync(x=>x.Id==id);
 
             if (subCategory == null)
