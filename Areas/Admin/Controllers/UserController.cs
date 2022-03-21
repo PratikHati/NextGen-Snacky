@@ -22,14 +22,14 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Index()
-        { 
+        {
             if(User.Identity.IsAuthenticated)
             {
                 var identity = (ClaimsIdentity)this.User.Identity;      //this tecnique used to get current logged in user role (Look StackOverflow)
 
                 var claim = identity.FindFirst(ClaimTypes.NameIdentifier);      //null if user not logged in
 
-                if (User.IsInRole(SD.CustomerUser))                  //(2nd level security)Customer user should not able to see Index() of this UserController (SECURITY AND PRIVACY)
+                if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.KitchenUser) || User.IsInRole(SD.FrontDeskUser))                  //(2nd level security)Customer user should not able to see Index() of this UserController (SECURITY AND PRIVACY)
                 {
                     return NoContent();                     //don't use UnAuthorized() as it will behave as broken link. Rather use NoContent()
                 }

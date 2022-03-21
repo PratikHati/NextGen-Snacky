@@ -1900,12 +1900,12 @@ pre code {
 }
 
 .form-control:-ms-input-placeholder {
-  color: #6c757d;
+  color: white;
   opacity: 1;
 }
 
 .form-control::-ms-input-placeholder {
-  color: #6c757d;
+  color: white;
   opacity: 1;
 }
 
@@ -1915,13 +1915,13 @@ pre code {
 }
 
 .form-control:disabled, .form-control[readonly] {
-  background-color: #e9ecef;
+  background-color: white;
   opacity: 1;
 }
 
 select.form-control:focus::-ms-value {
-  color: #495057;
-  background-color: #fff;
+    color: white;
+    background-color: #fff;
 }
 
 .form-control-file,

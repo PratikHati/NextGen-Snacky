@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NextGen_Snacky.Data;
@@ -33,6 +34,20 @@ namespace NextGen_Snacky.Controllers
                 Coupon = await _adb.Coupon.Where(x => x.IsActive == true).ToListAsync()     //Fixed "isActive"
             };
             return View(IndexVM);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Details(int id)
+        {
+            //retreive menuitem info from db to display at Details()
+            var MenuItemFromDB = await _adb.MenuItem.Include(x => x.Category).Include(x => x.SubCategory).Where(x => x.Id == id).FirstOrDefaultAsync();
+            ShoppingCart cart = new ShoppingCart()
+            {
+                Id = MenuItemFromDB.Id,
+                MenuItem = MenuItemFromDB
+            };
+
+            return View(cart);
         }
 
         public IActionResult Privacy()
