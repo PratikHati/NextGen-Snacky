@@ -45,6 +45,8 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         //GET- Create
         public IActionResult Create()
         {
+            if (User.IsInRole(SD.CustomerUser))
+                return NoContent();
             return View(_MenuItemViewModel);
         }
 

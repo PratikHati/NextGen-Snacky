@@ -23,15 +23,18 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         //GET Category list
         public async Task<IActionResult> Index()
         {
-            if(User.Identity.IsAuthenticated)
+            if(User.Identity.IsAuthenticated)                       //Only authorized user allowed
                 return View(await _adb.Category.ToListAsync());
 
             return NoContent();
         }
 
         //GET create and it will not return any retrived element 
-        public IActionResult Create()
+        public IActionResult Create()                               //write is not allowd to customer user
         {
+            if (User.IsInRole(SD.CustomerUser))
+                return NoContent();
+
             return View();
         }
 

@@ -35,10 +35,23 @@ namespace NextGen_Snacky.Controllers
                 Category = await _adb.Category.ToListAsync(),
                 Coupon = await _adb.Coupon.Where(x => x.IsActive == true).ToListAsync()     //Fixed "isActive"
             };
+
+            //after user again log in, if he did not buy the prev cart, then show it again
+            var claims = (ClaimsIdentity)this.User.Identity;
+            var claim = claims.FindFirst(ClaimTypes.NameIdentifier);
+
+            if(claim != null)  //if user logged in
+            {
+                //retrive count of cart of this user
+                var cnt =  _adb.ShoppingCart.Where(x => x.ApplicationUserId == claim.Value).ToList().Count;     //fix - don't use await
+
+                //assign to current session
+                HttpContext.Session.SetInt32("ssCartCount", cnt);
+            }
             return View(IndexVM);
         }
 
-        [Authorize]
+     
         public async Task<IActionResult> Details(int id)
         {
             //retreive menuitem info from db to display at Details()
@@ -64,11 +77,11 @@ namespace NextGen_Snacky.Controllers
             shoppingcart.Id = 0;
             if (ModelState.IsValid)
             {
-                var claims = (ClaimsIdentity)this.User.Identity;    //get claims
-                var claim = claims.FindFirst(ClaimTypes.NameIdentifier);
-                shoppingcart.ApplicationUserId = claim.Value;       //assign ApplicationUserId
+                var claims = (ClaimsIdentity)this.User.Identity;                //get claims
+                var claim = claims.FindFirst(ClaimTypes.NameIdentifier);        //get claim name
+                shoppingcart.ApplicationUserId = claim.Value;                   //assign ApplicationUserId
 
-                ShoppingCart cartfromdb = await _adb.ShoppingCart.Where      //cart from db
+                ShoppingCart cartfromdb = await _adb.ShoppingCart.Where         //cart from db
                     (x => x.ApplicationUserId == shoppingcart.ApplicationUserId && x.MenuItemId == shoppingcart.MenuItemId).FirstOrDefaultAsync();
 
                 if (cartfromdb == null)

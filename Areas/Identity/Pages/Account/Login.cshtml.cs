@@ -11,6 +11,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using NextGen_Snacky.Data;
+using Microsoft.EntityFrameworkCore;
+using NextGen_Snacky.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace NextGen_Snacky.Areas.Identity.Pages.Account
 {
@@ -20,14 +24,17 @@ namespace NextGen_Snacky.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly ApplicationDbContext _adb;
 
         public LoginModel(SignInManager<IdentityUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<IdentityUser> userManager)
+            UserManager<IdentityUser> userManager,
+            ApplicationDbContext db)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _adb = db;
         }
 
         [BindProperty]
@@ -82,6 +89,15 @@ namespace NextGen_Snacky.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    //retrive User info
+                    var user = await _adb.Users.Where(x => x.Email == Input.Email).FirstOrDefaultAsync();
+
+                    //retrive corresponding Cart info from db
+                    List<ShoppingCart> cartslist = await _adb.ShoppingCart.Where(x => x.ApplicationUserId == user.Id).ToListAsync();
+
+                    //Include count of those cart objects in the session
+                    HttpContext.Session.SetInt32("ssCartCount", cartslist.Count);    
+
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
