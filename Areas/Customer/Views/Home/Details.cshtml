@@ -95,7 +95,7 @@
                     <label asp-for="Count" class="col-md-form-label text-info"></label>
                 </div>
                 <div class="col-8">
-                    <input asp-for="Count"  class="form-control" />
+                    <input asp-for="Count"  class="form-control" min="0" />
                     <span asp-validation-for="Count" class="text-danger"></span>
                 </div>
             </div>

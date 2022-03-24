@@ -47,7 +47,7 @@ namespace NextGen_Snacky
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
             //services.AddHttpContextAccessor();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSession(options=> {             //session added look "STACKOVERFLOW"
                 options.Cookie.IsEssential = true;
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
