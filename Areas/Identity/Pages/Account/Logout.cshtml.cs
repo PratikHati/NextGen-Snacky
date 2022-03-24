@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using NextGen_Snacky.Utility;
 
 namespace NextGen_Snacky.Areas.Identity.Pages.Account
 {
@@ -30,7 +31,7 @@ namespace NextGen_Snacky.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
             await _signInManager.SignOutAsync();
-            HttpContext.Session.SetInt32("ssCartCount", 0);     //after log out, cart count must be 0
+            HttpContext.Session.SetInt32(SD.ssCartCount, 0);     //after log out, cart count must be 0
             _logger.LogInformation("User logged out.");
             if (returnUrl != null)
             {

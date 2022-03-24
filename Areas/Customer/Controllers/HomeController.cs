@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using NextGen_Snacky.Data;
 using NextGen_Snacky.Models;
 using NextGen_Snacky.Models.ViewModels;
+using NextGen_Snacky.Utility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -46,7 +47,7 @@ namespace NextGen_Snacky.Controllers
                 var cnt =  _adb.ShoppingCart.Where(x => x.ApplicationUserId == claim.Value).ToList().Count;     //fix - don't use await
 
                 //assign to current session
-                HttpContext.Session.SetInt32("ssCartCount", cnt);
+                HttpContext.Session.SetInt32(SD.ssCartCount , cnt);
             }
             return View(IndexVM);
         }
@@ -100,7 +101,7 @@ namespace NextGen_Snacky.Controllers
                 var count = _adb.ShoppingCart.Where(x => x.ApplicationUserId == shoppingcart.ApplicationUserId).ToList().Count();
 
                 //assign that count to session
-                HttpContext.Session.SetInt32("ssCartCount", count);     //error
+                HttpContext.Session.SetInt32(SD.ssCartCount, count);     //error
 
                 return RedirectToAction("Index");
             }

@@ -15,6 +15,7 @@ using NextGen_Snacky.Data;
 using Microsoft.EntityFrameworkCore;
 using NextGen_Snacky.Models;
 using Microsoft.AspNetCore.Http;
+using NextGen_Snacky.Utility;
 
 namespace NextGen_Snacky.Areas.Identity.Pages.Account
 {
@@ -96,7 +97,7 @@ namespace NextGen_Snacky.Areas.Identity.Pages.Account
                     List<ShoppingCart> cartslist = await _adb.ShoppingCart.Where(x => x.ApplicationUserId == user.Id).ToListAsync();
 
                     //Include count of those cart objects in the session
-                    HttpContext.Session.SetInt32("ssCartCount", cartslist.Count);    
+                    HttpContext.Session.SetInt32(SD.ssCartCount , cartslist.Count);    
 
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
