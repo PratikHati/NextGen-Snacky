@@ -38,7 +38,7 @@ namespace NextGen_Snacky.Models
         public DateTime PickUpDate { get; set; }
 
         [Display(Name ="Coupon Code")]
-        public string CouponCode { get; set; }
+        public string CouponCode { get; set; }          //to store user saved coupon code for later use
         public double CouponCodeDiscount { get; set; }
         public string Status { get; set; }
         public string PaymentStatus { get; set; }

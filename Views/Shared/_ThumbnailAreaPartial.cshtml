@@ -5,10 +5,11 @@
     <div class="col-12 post @Model.FirstOrDefault().Category.Name.Replace(" ",string.Empty) menu-restaurant ">
 
         @*-----------------------------------ToString display only category-------------------------------------- *@
-        <div class="row">
-            <h3 class="text-success">
+        <div class="row ">
+            <h4 class="text-danger text-uppercase">
+
                 @Model.FirstOrDefault().Category.Name
-            </h3>
+            </h4>
         </div>
 
         @foreach (var item in Model)
@@ -39,19 +40,19 @@
                                 }
                             </div>
                             <div class="col-4 text-right" style="color:maroon">
-                                <h4>Price: @item.Price $</h4>
+                                <h4>Price: $@item.Price </h4>
                             </div>
                         </div>
 
-                        <div class="row col-12 text-justify d-none d-md-block">
+                        <div class="col-12 text-justify d-none d-md-block">
                             <p>
                                 Description : @item.Description
                             </p>
                         </div>
 
                         <div class="col-md-3 col-sm-12 text-right">
-                            <a asp-action="Details" class="btn btn-success form-control" asp-route-id="@item.Id">
-                                Detail
+                            <a asp-action="Details" class="btn btn-outline-success bg-dark form-control" asp-route-id="@item.Id">
+                                Details
                             </a>
                         </div>
                     </div>

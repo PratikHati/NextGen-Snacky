@@ -1,0 +1,88 @@
+﻿@model NextGen_Snacky.Models.ViewModels.OrderDetailsCart;
+
+@{
+    ViewData["Title"] = "Cart Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<form method="post">
+    @if (Model.ListCart.Count > 0)
+    {
+        <br />
+        <input id="userId" asp-for="@Model.ListCart[0].ApplicationUserId" hidden />
+
+        <div class="backgroundWhiteBorder">
+            <div class="card">
+                <div class="card-header bg-dark text-light ml-0 row container">
+                    <div class="col-6">
+                        <i class="fas fa-shopping-cart"></i>
+                        &nbsp;
+                        Shopping Cart
+                    </div>
+                    <div class="col-6">
+                        <a class="btn btn-outline-info btn-sm float-right" asp-area="Customer" asp-controller="Home" asp-action="Index">
+                            Continue Shopping
+                        </a>
+                    </div>
+
+                </div>
+                <div class="card-body">
+                    @foreach (var v in Model.ListCart)
+                    {
+                        <div class="row">
+                            <div class="d-none d-lg-block col-lg-2 text-center">
+                                <img src="@v.MenuItem.Image" width="120" height="80" />
+                            </div>
+                            <div class="col-12 text-sm-center col-lg-5 text-lg-left">
+                                <h4>
+                                    <strong>@v.MenuItem.Name</strong>
+                                </h4>
+                                <h4>
+                                    <small>@v.MenuItem.Description</small>
+                                </h4>
+                            </div>
+                            <div class="col-12 text-sm-center col-lg-5 text-lg-right row">
+                                <div class="col-4 text-md-right" style="padding-top:5px">
+                                    <h6>
+                                        <strong>
+                                            $ @v.MenuItem.Price
+                                            <span class="text-muted">
+                                                X
+                                            </span>
+                                            @v.Count
+                                        </strong>
+                                    </h6>
+                                </div>
+                                <div class="col-6 col-sm-4 col-lg-6">
+                                    <div class="float-right mx-1">
+                                        <button type="submit" class="btn btn-primary" asp-action="plus" asp-route-cartId="@v.Id">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <div class="float-right mx-1">
+                                        <button type="submit" class="btn btn-warning" asp-action="minus" asp-route-cartId="@v.Id">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-sm-4 col-lg-2">
+                                    <div class="float-right mx-1">
+                                        <button type="submit" class="btn btn-outline-danger" asp-action="remove" asp-route-cartId="@v.Id">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="backgroundWhiteBorder">No items added in Shopping Cart</div>
+    }
+</form>
