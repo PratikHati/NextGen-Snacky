@@ -1,6 +1,8 @@
 # NextGen-Snacky
                                          AN ASP.NET CORE MVC 3 WEB APPLICATION
                               Link(Azure)- https://nextgensnacky20220327105223.azurewebsites.net/
+                              
+Kindly create an account(Customer) in the website. Admin privilege can not be given to public user. So Customer has only limited functionality.
 ![image](https://user-images.githubusercontent.com/48886326/159074464-489c113a-1b10-42b0-b242-32d4e4488c34.png)
                                                        
 ![image](https://user-images.githubusercontent.com/48886326/159104751-2728fd6b-98bc-436f-beb2-abf278ebad1c.png)
