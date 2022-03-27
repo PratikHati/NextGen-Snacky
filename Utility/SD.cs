@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NextGen_Snacky.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +14,16 @@ namespace NextGen_Snacky.Utility
         public const string KitchenUser = "Chef";
         public const string FrontDeskUser = "Cashier";
         public const string CustomerUser = "Customer";
-        public const string ssCartCount  = "ssCartCount ";
+        public const string ssCartCount  = "ssCartCount";
+        public const string ssCouponCode = "ssCouponCode";
+
+        public const string StatusInProcess = "Being Prepared";
+        public const string StatusReady = "Ready for Pickup ";
+
+        public const string PaymentStatusCompleted = "Approved";
+        public const string PaymentStatusCancelled = "Rejected";
+        public const string PaymentStatusPending = "Pending";
+
 
         //StackOverFlow code snippit
         public static string ConvertToRawHtml(string source)
@@ -42,6 +52,37 @@ namespace NextGen_Snacky.Utility
                 }
             }
             return new string(array, 0, arrayIndex);
+        }
+
+        public static double DiscountedPrice(Coupon couponfromDB, double originaltotalorder)
+        {
+            if(couponfromDB == null)
+            {
+                return originaltotalorder;      // no coupon code
+            }
+            else
+            {
+                if(couponfromDB.MinimumAmount < originaltotalorder)
+                {
+                    //return discounted price
+                    if (couponfromDB.CouponType.Contains("0"))                                     // % case
+                    {
+                        originaltotalorder = Math.Round(originaltotalorder - (originaltotalorder * (couponfromDB.Discount / 100)),2);
+
+                        return originaltotalorder;
+                    }
+                    else
+                    {
+                        originaltotalorder = Math.Round(originaltotalorder - couponfromDB.Discount,2);                          //$ case
+
+                        return originaltotalorder; 
+                    }
+                }
+                else
+                {
+                    return originaltotalorder;      //minimum has not meet
+                }
+            }
         }
     }
 }

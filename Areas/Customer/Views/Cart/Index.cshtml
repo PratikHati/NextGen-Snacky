@@ -6,6 +6,7 @@
 
 }
 
+
 <form method="post">
     @if (Model.ListCart.Count > 0)
     {
@@ -31,8 +32,8 @@
                     @foreach (var v in Model.ListCart)
                     {
                         <div class="row">
-                            <div class="d-none d-lg-block col-lg-2 text-center">
-                                <img src="@v.MenuItem.Image" width="120" height="80" />
+                            <div class="d-none d-lg-block col-lg-2 text-center py-2">
+                                <img src="@v.MenuItem.Image" class="rounded" width="120" height="80" />
                             </div>
                             <div class="col-12 text-sm-center col-lg-5 text-lg-left">
                                 <h4>
@@ -56,28 +57,64 @@
                                 </div>
                                 <div class="col-6 col-sm-4 col-lg-6">
                                     <div class="float-right mx-1">
-                                        <button type="submit" class="btn btn-primary" asp-action="plus" asp-route-cartId="@v.Id">
+                                        <button type="submit" class="btn btn-primary" asp-action="Plus" asp-route-cartId="@v.Id">
                                             <i class="fas fa-plus"></i>
                                         </button>
                                     </div>
                                     <div class="float-right mx-1">
-                                        <button type="submit" class="btn btn-warning" asp-action="minus" asp-route-cartId="@v.Id">
+                                        <button type="submit" class="btn btn-warning" asp-action="Minus" asp-route-cartId="@v.Id">
                                             <i class="fas fa-minus"></i>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="col-2 col-sm-4 col-lg-2">
                                     <div class="float-right mx-1">
-                                        <button type="submit" class="btn btn-outline-danger" asp-action="remove" asp-route-cartId="@v.Id">
+                                        <button type="submit" class="btn btn-outline-danger" asp-action="Remove" asp-route-cartId="@v.Id">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <hr />
                     }
 
+                    <div class="row">
+                        <div class="col-12 col-md-5">
+                            <div class="row">
+                                <div class="col-7">
+                                    <input asp-for="@Model.OrderHeader.CouponCode" id="txtcouponcode" class="form-control" placeholder="coupon code..." />
+                                </div>
+                                <div class="col-5" style="margin-top:2px">
+                                    <button type="submit" class="btn btn-sm btn-outline-success form-control font-weight-bolder" id="btncoupon" asp-action="AddCoupon">
+                                        Apply
+                                    </button>
+                                    <hr />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger form-control font-weight-bolder" id="btnremovecoupon" asp-action="RemoveCoupon">
+                                        Remove
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-5 offset-md-1 col-lg-4 offset-lg-3 pr-4">
+                            <div class="col-9">
+                                <a disabled class="list-group-item d-flex justify-content-center bg-white ">
+                                    <span class="text-dark font-weight-bolder">Total (USD) &nbsp; &nbsp;</span>
+                                    <strong class="text-dark font-weight-bolder">
+
+                                        <span id="txtordertotal">$@Math.Round(Model.OrderHeader.OrderTotal,2)</span>
+                                    </strong>
+                                </a>
+                            </div>
+                            <div  class="col-9">
+                                <button type="submit" asp-action="Summary" asp-area="Customer" asp-controller="Cart" class="btn btn-success btn-outline-info bg-dark font-weight-bold form-control"> Summary</button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
+
             </div>
         </div>
     }
@@ -86,3 +123,22 @@
         <div class="backgroundWhiteBorder">No items added in Shopping Cart</div>
     }
 </form>
+
+@section Scripts{   
+    <script>
+        $(function () {
+            var couponcode = document.getElementById("txtcouponcode").value;
+            if (couponcode.length > 0) {
+                document.getElementById("btncoupon").style.display = 'none';
+                document.getElementById("btnremovecoupon").style.display = '';
+            }
+            else {
+                ocument.getElementById("btncoupon").style.display = '';
+                document.getElementById("btnremovecoupon").style.display = 'none';
+            }
+        });
+    </script>
+}
+
+
+

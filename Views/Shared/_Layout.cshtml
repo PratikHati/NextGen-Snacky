@@ -15,11 +15,13 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <!-- CSS only -->
+    <link rel="stylesheet" href="~/css/jquery-ui.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.13.18/jquery.timepicker.css"/>
 </head>
-<body class="search_background">
+<body class="search_background ">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
-            <div class="container">
+            <div class="container">    
                 <a class="navbar-brand" asp-area="Customer" asp-controller="Home" asp-action="Index">NextGen_Snacky</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -49,11 +51,11 @@
                         @if (HttpContextAccessor.HttpContext.Session.GetInt32(SD.ssCartCount) != null)
                         {
                             <li style=" color:white">
-                                <a  class="nav-link" asp-action="Index" asp-controller="Cart" asp-area="Customer">
+                                <a class="nav-link" asp-action="Index" asp-controller="Cart" asp-area="Customer">
                                     @{
                                         var count = HttpContextAccessor.HttpContext.Session.GetInt32(SD.ssCartCount);
                                     }
-                                    <i class="fas fa-shopping-cart"></i>
+                                    <i class="text-">Cart</i>
                                     &nbsp; (@count)
                                 </a>
                             </li>
@@ -61,8 +63,8 @@
                         else
                         {
                             <li style=" color:white">
-                                <a  asp-action="Index" asp-controller="Cart" asp-area="Customer" class="nav-link">
-                                    <i class="fas fa-shopping-cart"></i>
+                                <a asp-action="Index" asp-controller="Cart" asp-area="Customer" class="nav-link">
+                                    <i>Cart</i>
                                     &nbsp; (0)
                                 </a>
                             </li>
@@ -88,6 +90,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/jquery-ui.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

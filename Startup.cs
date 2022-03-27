@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NextGen_Snacky.Data;
 using NextGen_Snacky.Services;
+using NextGen_Snacky.Utility;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +41,8 @@ namespace NextGen_Snacky
                 //(options => options.SignIn.RequireConfirmedAccount = true) removed as email authentication not mandetory for our project
 
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));     //assign key from appsetting.json to SD 
             
             services.AddSingleton<IEmailSender, EmailSender>();             //Created a different "EmailSender" class to fix "Unable to resolve service for type IEmailSender while attempting to activate RegisterModel"
 
@@ -73,6 +77,9 @@ namespace NextGen_Snacky
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
+
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
