@@ -44,7 +44,7 @@
                                         <label class="font-weight-bold">Name</label>
                                     </div>
                                     <div class="col-8">
-                                        <input asp-for="@Model.OrderHeader.PickUpName" type="text" class="form-control" disabled />
+                                        <input asp-for="@Model.OrderHeader.PickUpName" type="text" id="txtName" class="form-control" disabled />
                                     </div>
                                 </div>
                                 <div class="row my-1">
@@ -52,7 +52,7 @@
                                         <label class="font-weight-bold">Phone Number</label>
                                     </div>
                                     <div class="col-8">
-                                        <input asp-for="@Model.OrderHeader.PhoneNumber" required type="text" class="form-control" />
+                                        <input asp-for="@Model.OrderHeader.PhoneNumber" required type="text" id="txtPhone" class="form-control" />
                                     </div>
                                 </div><div class="row my-1">
                                     <div class="col-4">
@@ -147,7 +147,7 @@
 @*                                to remove inbuild stripe button
 *@                                document.getElementsByClassName("stripe-button-el")[0].style.display = 'none';
                             </script>
-                            <button type="submit" id="PlaceOrder" onclick="return ValidateInput()" value="place order" class="btn btn-outline-success bg-dark font-weight-bold form-control">Place Order</button>
+                            <button type="submit" id="btnPlaceOrder" onclick="return ValidateInput()" value="Place Order" class="btn btn-outline-success bg-dark font-weight-bold form-control">Place Order</button>
 
                         </div>
                     </div>
@@ -193,6 +193,44 @@
         $('#datepicker').change(function () {
             setPickUpTime();
         });
+        function setPickUpTime() {
+            var dateSelected = document.getElementById("datepicker").value;
+            var dt = new Date(dateSelected);
+            var today = new Date();
+            dt.setHours(0, 0, 0, 0);
+            if (dt > today) {
+                selectedTime = '11:00am';
+            }
+            else {
+                selectedTime = getTimeFromCurrentDate();
+            }
+            $('#timepicker').timepicker('option', 'minTime', selectedTime);
+        }
+        function validateInput() {
+            var time = document.getElementById("timepicker").value;
+            var dt = document.getElementById("datepicker").value;
+            var name = document.getElementById("txtName").value;
+            var phone = document.getElementById("txtPhone").value;
+            if (dt.toString().length == 0) {
+                alert("Please select pickup date")
+                return false;
+            }
+            else if (time.toString().length == 0) {
+                alert("Please select pickup time")
+                return false;
+            }
+            else if (name.toString().length == 0) {
+                alert("Please enter pickup name")
+                return false;
+            }
+            else if (phone.toString().length == 0) {
+                alert("Please enter a phone number")
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
     </script>
 }
 

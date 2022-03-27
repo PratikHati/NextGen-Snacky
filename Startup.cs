@@ -42,8 +42,10 @@ namespace NextGen_Snacky
 
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddScoped<IDBinitializer, DBinitializer>();
+
             services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));     //assign key from appsetting.json to SD 
-            
+
             services.AddSingleton<IEmailSender, EmailSender>();             //Created a different "EmailSender" class to fix "Unable to resolve service for type IEmailSender while attempting to activate RegisterModel"
 
             //Fix link (STACK OVERFLOW)-> "https://stackoverflow.com/questions/52089864/unable-to-resolve-service-for-type-iemailsender-while-attempting-to-activate-reg"
@@ -60,7 +62,7 @@ namespace NextGen_Snacky
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDBinitializer idb)
         {
             if (env.IsDevelopment())
             {
@@ -79,6 +81,7 @@ namespace NextGen_Snacky
             app.UseRouting();
 
             StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
+            idb.Initialize();           //initialize "IDBinitializer" for first time
 
             app.UseSession();
             app.UseAuthentication();

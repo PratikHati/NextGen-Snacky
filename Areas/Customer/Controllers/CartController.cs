@@ -5,6 +5,7 @@ using NextGen_Snacky.Data;
 using NextGen_Snacky.Models;
 using NextGen_Snacky.Models.ViewModels;
 using NextGen_Snacky.Utility;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,7 +119,7 @@ namespace NextGen_Snacky.Areas.Customer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SummaryPost()              //Not tested, pls review later
+        public async Task<IActionResult> SummaryPost(string stripetoken)              //Not tested, pls review later  
         {
             //retrive user info from session
             var claims = (ClaimsIdentity)this.User.Identity;
@@ -186,6 +187,42 @@ namespace NextGen_Snacky.Areas.Customer.Controllers
 
             await _adb.SaveChangesAsync();
 
+            var options = new ChargeCreateOptions
+            {
+                Amount = Convert.ToInt32(ViewmodelCart.OrderHeader.OrderTotal * 100),     //STRIPE calculate price in cents not on dolars
+                Currency = "usd",
+                Description = "Order ID: "+ ViewmodelCart.OrderHeader.Id,
+                Source = stripetoken
+            };
+
+            var service = new ChargeService();              //Charge from STRIPE package
+
+            //---------------------IMPORTANT------------------------
+
+            Charge charge = service.Create(options);        //Actual transaction logic
+
+            if(charge.BalanceTransactionId == null)
+            {
+                //failed transaction
+                ViewmodelCart.OrderHeader.PaymentStatus = SD.PaymentStatusCancelled;
+            }
+            else
+            {
+                //successful transactionID but still may have error in actual transaction operation like "ROLEBACK" 
+                ViewmodelCart.OrderHeader.TransactionID = charge.BalanceTransactionId;  
+            }
+
+            if(charge.Status.ToLower() == "succeeded")
+            {
+                ViewmodelCart.OrderHeader.PaymentStatus = SD.PaymentStatusCompleted;
+                ViewmodelCart.OrderHeader.Status = SD.StatusSubmitted;
+            }
+            else
+            {
+                ViewmodelCart.OrderHeader.PaymentStatus = SD.PaymentStatusCancelled;
+            }
+
+            await _adb.SaveChangesAsync();
             return RedirectToAction("Index","Home");
         }
         public CartController(ApplicationDbContext adb)

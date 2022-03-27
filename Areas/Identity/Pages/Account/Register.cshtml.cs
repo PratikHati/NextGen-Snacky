@@ -107,29 +107,7 @@ namespace NextGen_Snacky.Areas.Identity.Pages.Account
                 
                 if (result.Succeeded)
                 {
-                    if(!await _roleManager.RoleExistsAsync(SD.CustomerUser))        //if Customer already not exists
-                    {
-                        //create a Customer account
-                        await _roleManager.CreateAsync(new IdentityRole(SD.CustomerUser));
-                    }
-
-                    if (!await _roleManager.RoleExistsAsync(SD.ManageUser))        //if Manager already not exists
-                    {
-                        //create a Manager account
-                        await _roleManager.CreateAsync(new IdentityRole(SD.ManageUser));
-                    }
-
-                    if (!await _roleManager.RoleExistsAsync(SD.KitchenUser))        //if Chef already not exists
-                    { 
-                        //create a Chef account
-                        await _roleManager.CreateAsync(new IdentityRole(SD.KitchenUser));
-                    }
-
-                    if (!await _roleManager.RoleExistsAsync(SD.FrontDeskUser))        //if Cashier already not exists
-                    {
-                        //create a Cashier account
-                        await _roleManager.CreateAsync(new IdentityRole(SD.FrontDeskUser));
-                    }
+                    
 
                     //assign current role
 
