@@ -23,25 +23,32 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         //GET Category list
         public async Task<IActionResult> Index()
         {
-            if(User.Identity.IsAuthenticated)                       //Only authorized user allowed
-                return View(await _adb.Category.ToListAsync());
+            //Every body can view Category info
+            return View(await _adb.Category.ToListAsync());
 
-            return NoContent();
         }
 
         //GET create and it will not return any retrived element 
         public IActionResult Create()                               //write is not allowd to customer user
         {
-            if (User.IsInRole(SD.CustomerUser))
-                return NoContent();
+            if (User.Identity.IsAuthenticated)                      //Added Extra layer of security at backend
+            {
+                if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+                    return NoContent();
 
-            return View();
+                return View();
+            }
+            return NoContent();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Category category)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
             if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
             {
                 return NoContent();
@@ -61,6 +68,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
             if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
             {
                 return NoContent();
@@ -83,6 +94,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Category category)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
             if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
             {
                 return NoContent();
@@ -99,7 +114,11 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
 
         public async Task<IActionResult> Delete(int? id)
         {
-            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser) )
             {
                 return NoContent();
             }
@@ -121,6 +140,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
             if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
             {
                 return NoContent();
@@ -141,6 +164,7 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         //GET -Details
         public async Task<IActionResult> Details(int? id)
         {
+            //Anybody can View
             if (id == null)
             {
                 return NotFound();

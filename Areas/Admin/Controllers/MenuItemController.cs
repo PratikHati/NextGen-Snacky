@@ -34,17 +34,17 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                var menu = await _adb.MenuItem.Include(x => x.Category).Include(x => x.SubCategory).ToListAsync();
-                return View(menu);
-            }
-
-            return NoContent();            
+            //anybody can view Index
+            var menu = await _adb.MenuItem.Include(x => x.Category).Include(x => x.SubCategory).ToListAsync();
+            return View(menu);
         }
         //GET- Create
         public IActionResult Create()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
             if (User.IsInRole(SD.CustomerUser))
                 return NoContent();
             return View(_MenuItemViewModel);
@@ -55,7 +55,11 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePOST()           // MenuItemViewModel already binded in constructor so , not need to pass as parameter
         {
-            if(User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
             {
                 return NoContent();
             }
@@ -79,21 +83,21 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             if (files.Count > 0)
             {
                 //file already uploaded
-                var upload = Path.Combine(rootpath,@"images\");       //fixed
+                var upload = Path.Combine(rootpath, @"images\");       //fixed
                 var extension = Path.GetExtension(files[0].FileName);
 
                 using (var filestream = new FileStream(Path.Combine(upload + _MenuItemViewModel.MenuItem.Id + extension), FileMode.Create))
                 {
                     files[0].CopyTo(filestream);        //copy file to server(upload)
                 }
-                menuItemFromDb.Image = @"\images\" +_MenuItemViewModel.MenuItem.Id + extension;
+                menuItemFromDb.Image = @"\images\" + _MenuItemViewModel.MenuItem.Id + extension;
             }
             else
             {
                 //files not uploaded, use default 
-                var upload = Path.Combine(rootpath,@"\images\"+SD.DefaultFoodImage);        //use default png file
+                var upload = Path.Combine(rootpath, @"\images\" + SD.DefaultFoodImage);        //use default png file
 
-                System.IO.File.Copy(upload,rootpath+@"\images\"+_MenuItemViewModel.MenuItem.Id+".png");
+                System.IO.File.Copy(upload, rootpath + @"\images\" + _MenuItemViewModel.MenuItem.Id + ".png");
 
                 menuItemFromDb.Image = @"\images\" + _MenuItemViewModel.MenuItem.Id + ".png";      //also update menuItemFromDb's Image
             }
@@ -105,8 +109,12 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
 
 
         //GET- Edit
-        public async Task<IActionResult> Edit(int ? id)
+        public async Task<IActionResult> Edit(int? id)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
             if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
             {
                 return NoContent();
@@ -117,9 +125,9 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            _MenuItemViewModel.MenuItem = await _adb.MenuItem.Include(x => x.Category).Include(x => x.SubCategory).SingleOrDefaultAsync(x=>x.Id==id);
+            _MenuItemViewModel.MenuItem = await _adb.MenuItem.Include(x => x.Category).Include(x => x.SubCategory).SingleOrDefaultAsync(x => x.Id == id);
 
-            _MenuItemViewModel.SubCaregory = await _adb.SubCategory.Where(y=>y.CategoryId==_MenuItemViewModel.MenuItem.CategoryId).ToListAsync();
+            _MenuItemViewModel.SubCaregory = await _adb.SubCategory.Where(y => y.CategoryId == _MenuItemViewModel.MenuItem.CategoryId).ToListAsync();
 
             if (_MenuItemViewModel.MenuItem == null)
             {
@@ -131,8 +139,12 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         //POST- Edit
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPOST(int ? id)      // MenuItemViewModel already binded in constructor so , not need to pass as parameter
+        public async Task<IActionResult> EditPOST(int? id)      // MenuItemViewModel already binded in constructor so , not need to pass as parameter
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
             if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
             {
                 return NoContent();
@@ -146,7 +158,7 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                _MenuItemViewModel.SubCaregory = await _adb.SubCategory.Where(x=>x.CategoryId == _MenuItemViewModel.MenuItem.CategoryId).ToListAsync();
+                _MenuItemViewModel.SubCaregory = await _adb.SubCategory.Where(x => x.CategoryId == _MenuItemViewModel.MenuItem.CategoryId).ToListAsync();
                 return View(_MenuItemViewModel);
             }
 
@@ -156,10 +168,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             var files = HttpContext.Request.Form.Files;             //retreive the file from Create.cshtml uploaded by user
 
             var menuItemFromDb = await _adb.MenuItem.FindAsync(_MenuItemViewModel.MenuItem.Id);         //retrive the MenuItem ID for the picture
-                
+
             if (files.Count > 0)
             {
-                    //file already uploaded
+                //file already uploaded
                 var upload = Path.Combine(rootpath, @"images\");    //Review if not updating image url
                 var extension = Path.GetExtension(files[0].FileName);
 
@@ -216,6 +228,10 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         //GET- Delete
         public async Task<IActionResult> Delete(int? id)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
             if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
             {
                 return NoContent();
@@ -240,8 +256,12 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         //POST- Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int  id)           // MenuItemViewModel already binded in constructor so , not need to pass as parameter
+        public async Task<IActionResult> DeleteConfirmed(int id)           // MenuItemViewModel already binded in constructor so , not need to pass as parameter
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
             if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser))
             {
                 return NoContent();
@@ -250,16 +270,16 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             var rootpath = _hosting.WebRootPath;
             MenuItem menuitem = await _adb.MenuItem.FindAsync(id);
 
-            if(menuitem != null)
+            if (menuitem != null)
             {
                 //first delete image path
-                var imagepath = Path.Combine(rootpath,menuitem.Image.TrimStart('\\'));
+                var imagepath = Path.Combine(rootpath, menuitem.Image.TrimStart('\\'));
 
 
                 if (System.IO.File.Exists(imagepath))
                 {
                     //delete File , not path
-                    System.IO.File.Delete(imagepath);   
+                    System.IO.File.Delete(imagepath);
                 }
                 //then delete menuitem
                 _adb.MenuItem.Remove(menuitem);

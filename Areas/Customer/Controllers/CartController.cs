@@ -25,6 +25,10 @@ namespace NextGen_Snacky.Areas.Customer.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
             ViewmodelCart = new OrderDetailsCart()
             {
                 OrderHeader = new Models.OrderHeader()

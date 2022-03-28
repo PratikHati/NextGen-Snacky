@@ -6,7 +6,7 @@
 
         @*-----------------------------------ToString display only category-------------------------------------- *@
         <div class="row ">
-            <h4 class="text-danger text-uppercase">
+            <h4 class="text-black">
 
                 @Model.FirstOrDefault().Category.Name
             </h4>
@@ -14,7 +14,7 @@
 
         @foreach (var item in Model)
         {
-            <div class="border border-dark rounded-0 bg-secondary text-white col-12" style="margin-bottom:10px; margin-top:10px; padding:10px;">
+            <div class="border border-dark rounded bg-secondary text-white col-12" style="margin-bottom:10px; margin-top:10px; padding:10px;">
                 <div class="row">
                     <div class="col-md-3 col-sm-12">
                         <image src="@item.Image" width="95%" height="150px" style="border-radius:5px; border:1px solid #808080" />

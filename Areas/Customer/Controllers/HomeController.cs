@@ -52,14 +52,14 @@ namespace NextGen_Snacky.Controllers
             return View(IndexVM);
         }
 
-     
+        public async Task<IActionResult> NotAllowed()
+        {
+            return View();
+        }
         public async Task<IActionResult> Details(int id)
         {
             //retreive menuitem info from db to display at Details()
-            if (!User.Identity.IsAuthenticated)
-            {
-                return NoContent();
-            }
+            
             var MenuItemFromDB = await _adb.MenuItem.Include(x => x.Category).Include(x => x.SubCategory).Where(x => x.Id == id).FirstOrDefaultAsync();
             ShoppingCart cart = new ShoppingCart()
             {

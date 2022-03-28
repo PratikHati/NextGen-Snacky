@@ -18,28 +18,34 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
 
         public CouponController(ApplicationDbContext adb)
         {
-            _adb = adb; 
+            _adb = adb;
         }
         public async Task<IActionResult> Index()
         {
-            if (User.Identity.IsAuthenticated)
-                return View(await _adb.Coupon.ToListAsync());
-
-            return NoContent();
+            //anyone can view
+            return View(await _adb.Coupon.ToListAsync());
         }
 
         //GET- Create
         public IActionResult Create()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
             return View();
         }
 
         //POST- Create
-        [HttpPost,ActionName("Create")]
+        [HttpPost, ActionName("Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Coupon coupon)
         {
-            if(User.IsInRole(SD.ManageUser))
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
+            if (User.IsInRole(SD.ManageUser))
             {
                 if (ModelState.IsValid)
                 {
@@ -80,12 +86,16 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
             {
                 return NoContent();
             }
-            
+
         }
 
         //GET - Edit
-        public async Task<IActionResult> Edit(int ? id)
+        public async Task<IActionResult> Edit(int? id)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
             if (id == null)
             {
                 return NotFound();
@@ -97,7 +107,7 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
 
             var coupon = await _adb.Coupon.SingleOrDefaultAsync(x => x.Id == id);
 
-            if(coupon == null)
+            if (coupon == null)
             {
                 return NotFound();
             }
@@ -110,12 +120,16 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Coupon coupon)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
             if (coupon == null)
             {
                 return NotFound();
             }
 
-            if(User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser) || User.IsInRole(SD.KitchenUser))
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser) || User.IsInRole(SD.KitchenUser))
             {
                 return NoContent();
             }
@@ -129,7 +143,7 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
                 byte[] f = null;
 
                 //update file info in byte[]
-                if(file.Count > 0)
+                if (file.Count > 0)
                 {
                     using (var x = file[0].OpenReadStream())
                     {
@@ -164,16 +178,16 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         }
 
         //GET - Details
-        public async Task<IActionResult> Details(int ? id)
+        public async Task<IActionResult> Details(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var coupon = await _adb.Coupon.SingleOrDefaultAsync(x => x.Id == id);
 
-            if(coupon == null)
+            if (coupon == null)
             {
                 return NotFound();
             }
@@ -182,20 +196,24 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         }
 
         //Get - Delete
-        public async Task<IActionResult> Delete(int ? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            if(id == null)
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
+            if (id == null)
             {
                 return NotFound();
             }
 
-            if(User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser) || User.IsInRole(SD.KitchenUser))
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser) || User.IsInRole(SD.KitchenUser))
             {
                 return NoContent();
             }
             var coupon = await _adb.Coupon.SingleOrDefaultAsync(x => x.Id == id);
 
-            if(coupon == null)
+            if (coupon == null)
             {
                 return NotFound();
             }
@@ -204,15 +222,19 @@ namespace NextGen_Snacky.Areas.Admin.Controllers
         }
 
         //POST - DELETE
-        [HttpPost,ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeletePOST(int ? id)
+        public async Task<IActionResult> DeletePOST(int? id)
         {
-            if(id == null)
+            if (!User.Identity.IsAuthenticated)
+            {
+                return NoContent();
+            }
+            if (id == null)
             {
                 return NotFound();
             }
-            if(User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser) || User.IsInRole(SD.KitchenUser))
+            if (User.IsInRole(SD.CustomerUser) || User.IsInRole(SD.FrontDeskUser) || User.IsInRole(SD.KitchenUser))
             {
                 return NoContent();
             }
