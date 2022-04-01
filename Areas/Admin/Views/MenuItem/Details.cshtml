@@ -6,7 +6,7 @@
 }
 
 <br />
-<h2 class="text-info">Details Menu-Item</h2>
+<h2 class="text-dark">Details Menu-Item</h2>
 <br />
 
 
@@ -14,7 +14,7 @@
     <input type="hidden" asp-for="MenuItem.Id" />
 
     <fieldset disabled>
-        <div class="col-8">
+        <div class="col-12">
             @*------------------------for MenuItem.Name---------------------------*@
             <div class="form-group row">
                 <div class="col-4">
@@ -32,7 +32,8 @@
                     <label asp-for="MenuItem.Description" class="custom-label"></label>
                 </div>
                 <div class="col-8">
-                    @Html.TextBoxFor(m => m.MenuItem.Description)
+                    <input asp-for="MenuItem.Description" class="form-control" />
+                   
                 </div>
 
             </div>
@@ -80,13 +81,17 @@
                     <select asp-for="MenuItem.Spicyness" asp-items="Html.GetEnumSelectList<MenuItem.ESpicy>()" class="form-control">
                     </select>
                 </div>
-
+            </div>
+           
+            <div class="col-lg-12 offset-4">
+                <partial name="_DetailsAndBackToListButton" model="Model.MenuItem.Id" />
             </div>
         </div>
+
     </fieldset>
 
     <div class="col-3 offset-1">
-        <img src="@Model.MenuItem.Image" width="100%" style="border-radius:5px;border: 1px solid #bbb9b9;" />
+        <img src="@Model.MenuItem.Image" width="400px" style="border-radius:5px;border: 1px solid #bbb9b9;" />
     </div>
 </div>
 
