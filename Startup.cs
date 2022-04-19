@@ -87,7 +87,7 @@ namespace NextGen_Snacky
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            app.UseEndpoints(endpoints =>       //==============================ROUTING===============================
             {
                 //multiple ending route
                 endpoints.MapControllerRoute(
