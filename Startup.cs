@@ -76,7 +76,7 @@ namespace NextGen_Snacky
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseStaticFiles();       //to host html,css and js files
 
             app.UseRouting();
 

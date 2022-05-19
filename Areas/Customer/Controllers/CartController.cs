@@ -227,7 +227,9 @@ namespace NextGen_Snacky.Areas.Customer.Controllers
             }
 
             await _adb.SaveChangesAsync();
-            return RedirectToAction("Index","Home");
+            //return RedirectToAction("Index","Home");
+
+            return RedirectToAction("Confirm", "Order", new { id = ViewmodelCart.OrderHeader.Id});  //redirect to OrderController
         }
         public CartController(ApplicationDbContext adb)
         {
