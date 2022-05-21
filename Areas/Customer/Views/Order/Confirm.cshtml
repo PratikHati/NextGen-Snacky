@@ -1,0 +1,26 @@
+﻿@model NextGen_Snacky.Models.ViewModels.OrderDetailsListViewModel
+<h1>Confirm</h1>
+
+<div class="backgroundWhite">
+    <div class="row px-3">
+        <div class="col-8">
+            <h2>Order Confirmed!</h2>
+        </div>
+        <div class="col-4 text-right">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-success form-control">New Order</a>
+        </div>
+    </div>
+
+    @if (Model.OrderHeader != null)
+    {
+        <div style="color:maroon" class="p-3">
+            Your order confirmed! Please see the summary below.
+            <br />
+            Feel free to contact us if any problem.
+        </div>
+    }
+    else
+    {
+        <div class="text-danger">Error... Please try later</div>
+    }
+</div>
