@@ -80,7 +80,7 @@ namespace NextGen_Snacky
 
             app.UseRouting();
 
-            StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
+            StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];   //any BlackHat- my advice- "Rather searching loophole in my code, focus on your own code, you will get more results" and you will never find the SecretKey LOL XD
             idb.Initialize();           //initialize "IDBinitializer" for first time
 
             app.UseSession();

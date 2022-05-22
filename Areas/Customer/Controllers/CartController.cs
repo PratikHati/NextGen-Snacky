@@ -22,6 +22,11 @@ namespace NextGen_Snacky.Areas.Customer.Controllers
         [BindProperty]
         public OrderDetailsCart ViewmodelCart { get; set; }
 
+        public CartController(ApplicationDbContext adb)
+        {
+            _adb = adb;
+        }
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -123,6 +128,7 @@ namespace NextGen_Snacky.Areas.Customer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ActionName("Summary")]
         public async Task<IActionResult> SummaryPost(string stripetoken)              //Not tested, pls review later  
         {
             //retrive user info from session
@@ -135,7 +141,7 @@ namespace NextGen_Snacky.Areas.Customer.Controllers
             ViewmodelCart.OrderHeader.OrderDate = DateTime.Now;
             ViewmodelCart.OrderHeader.UserId = claim.Value;
             ViewmodelCart.OrderHeader.Status = SD.PaymentStatusPending;
-            ViewmodelCart.OrderHeader.PickUpTime = Convert.ToDateTime(ViewmodelCart.OrderHeader.PickUpDate.ToShortDateString() + " " + ViewmodelCart.OrderHeader.PickUpTime.ToShortDateString());
+            ViewmodelCart.OrderHeader.PickUpTime = Convert.ToDateTime(ViewmodelCart.OrderHeader.PickUpDate.ToShortDateString() + " " + ViewmodelCart.OrderHeader.PickUpTime.ToShortTimeString());   //error
 
 
             List<OrderDetails> orderdetailslist = new List<OrderDetails>();
@@ -182,7 +188,7 @@ namespace NextGen_Snacky.Areas.Customer.Controllers
 
             ViewmodelCart.OrderHeader.CouponCodeDiscount = ViewmodelCart.OrderHeader.OrderTotalOriginal - ViewmodelCart.OrderHeader.OrderTotal;
             
-            await _adb.SaveChangesAsync();
+            //await _adb.SaveChangesAsync();
 
             //Note- current cart info should be nullified, as next cart should be empty and current cart is being paid
             _adb.ShoppingCart.RemoveRange(ViewmodelCart.ListCart);
@@ -191,49 +197,65 @@ namespace NextGen_Snacky.Areas.Customer.Controllers
 
             await _adb.SaveChangesAsync();
 
-            var options = new ChargeCreateOptions
+            //---------------------IMPORTANT(Stripe)------------------------
+            try
             {
-                Amount = Convert.ToInt32(ViewmodelCart.OrderHeader.OrderTotal * 100),     //STRIPE calculate price in cents not on dolars
-                Currency = "usd",
-                Description = "Order ID: "+ ViewmodelCart.OrderHeader.Id,
-                Source = stripetoken
-            };
+                var options = new ChargeCreateOptions
+                {
+                    //Customer = User.Identity.Name,
+                    Amount = Convert.ToInt32(ViewmodelCart.OrderHeader.OrderTotal * 100),     //STRIPE calculate price in cents not on dolars
+                    Currency = "usd",
+                    Description = "Order ID : " + ViewmodelCart.OrderHeader.Id,
+                    Source = stripetoken
+                };
 
-            var service = new ChargeService();              //Charge from STRIPE package
+                var service = new ChargeService();              //Charge from STRIPE package
+                Charge charge = service.Create(options);        //Actual transaction logic
 
-            //---------------------IMPORTANT------------------------
+                if (charge.BalanceTransactionId == null)
+                {
+                    //failed transaction
+                    ViewmodelCart.OrderHeader.PaymentStatus = SD.PaymentStatusCancelled;
+                }
+                else
+                {
+                    //successful transactionID but still may have error in actual transaction operation like "ROLEBACK" 
+                    ViewmodelCart.OrderHeader.TransactionID = charge.BalanceTransactionId;
+                }
 
-            Charge charge = service.Create(options);        //Actual transaction logic
+                if (charge.Status.ToLower() == "succeeded")
+                {
+                    ViewmodelCart.OrderHeader.PaymentStatus = SD.PaymentStatusCompleted;
+                    ViewmodelCart.OrderHeader.Status = SD.StatusSubmitted;
+                }
+                else
+                {
+                    ViewmodelCart.OrderHeader.PaymentStatus = SD.PaymentStatusCancelled;
+                }
 
-            if(charge.BalanceTransactionId == null)
-            {
-                //failed transaction
-                ViewmodelCart.OrderHeader.PaymentStatus = SD.PaymentStatusCancelled;
             }
-            else
-            {
-                //successful transactionID but still may have error in actual transaction operation like "ROLEBACK" 
-                ViewmodelCart.OrderHeader.TransactionID = charge.BalanceTransactionId;  
-            }
 
-            if(charge.Status.ToLower() == "succeeded")
+
+            catch (StripeException e)
             {
-                ViewmodelCart.OrderHeader.PaymentStatus = SD.PaymentStatusCompleted;
-                ViewmodelCart.OrderHeader.Status = SD.StatusSubmitted;
-            }
-            else
-            {
-                ViewmodelCart.OrderHeader.PaymentStatus = SD.PaymentStatusCancelled;
+                switch (e.StripeError.Type)
+                {
+                    case "card_error":
+                        Console.WriteLine($"A payment error occurred: {ViewmodelCart.OrderHeader.PaymentStatus}");
+                        break;
+                    case "invalid_request_error":
+                        Console.WriteLine("An invalid request occurred.");
+                        break;
+                    default:
+                        Console.WriteLine("Another problem occurred, maybe unrelated to Stripe.");
+                        break;
+                }
             }
 
             await _adb.SaveChangesAsync();
             //return RedirectToAction("Index","Home");
-
+    
             return RedirectToAction("Confirm", "Order", new { id = ViewmodelCart.OrderHeader.Id});  //redirect to OrderController
-        }
-        public CartController(ApplicationDbContext adb)
-        {
-            _adb = adb;
         }
 
         public IActionResult AddCoupon()
