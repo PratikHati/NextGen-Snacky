@@ -53,11 +53,12 @@ namespace NextGen_Snacky.Data
                 //only once executed (SEEDING Database to add admin/manager account)
                 _manager.CreateAsync(new ApplicationUser
                 {
-                    UserName = "pratikbablu267@gmail.com",
-                    Email = "pratikbablu267@gmail.com",
+                    UserName = "admin@gmail.com",
+                    Email = "admin@gmail.com",
                     Name = "Pratik",
+                    EmailConfirmed = true,
                     PhoneNumber = "9438350383"
-                }, "Admin123*").GetAwaiter().GetResult();
+                }, "admin123").GetAwaiter().GetResult();
 
 
                 IdentityUser usr = await _adb.Users.FirstOrDefaultAsync(x=>x.Email == "pratikbablu267@gmail.com");
