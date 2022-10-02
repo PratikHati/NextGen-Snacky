@@ -36,11 +36,11 @@ namespace NextGen_Snacky.Data
                 Console.Write(e);
             }
 
-            if(_adb.Roles.Any(x=>x.Name == SD.ManageUser))
+            if(_adb.Roles.Any(x=>x.Name == SD.ManageUser))  //if manager exists
             {
                 return;
             }
-            else
+            else                                //no manager no other roles
             {
                 //create all role(SEEDING NEW DB if no role is there)
 
@@ -50,7 +50,7 @@ namespace NextGen_Snacky.Data
                 _rolemanager.CreateAsync(new IdentityRole(SD.CustomerUser)).GetAwaiter().GetResult();
 
 
-                //only once executed
+                //only once executed (SEEDING Database to add admin/manager account)
                 _manager.CreateAsync(new ApplicationUser
                 {
                     UserName = "pratikbablu267@gmail.com",
